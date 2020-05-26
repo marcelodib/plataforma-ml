@@ -1,0 +1,188 @@
+<%include ../common/header.ejs%>
+
+<!-- CONTENT -->
+<br><br><br><br>
+<div class="container">
+    <div class="form-group">
+        <input class="form-control col-md-8" type="text" id="searchProject" onkeyup="searchProject()"
+            placeholder="Buscar por nome...">
+    </div>
+    <br>
+    <div class="table-responsive">
+        <table class="table" id="projectTable">
+            <thead id="tableHeader">
+                <th>Upload</th>
+                <th>Download</th>
+                <th>Nome</th>
+                <th>Objeto</th>
+                <th>Status</th>
+                <th>Deletar</th>
+            </thead>
+            <tbody id="projectList">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- /CONTENT -->
+
+
+<%include ../common/footer.ejs%>
+
+<script>
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável executar todas as rotinas iniciais|
+     * |da página assim que ela é carregada.                 |
+     * =======================================================
+     */
+    window.onload = () => {
+        /*Chamada da função que adiciona os itens a side bar.*/
+        setSideBarTitle("Listar Projetos", "fa-list")
+        listProject();
+    };
+    $(document).ready(function () {
+        /*Chamada da função que ativa a side bar.*/
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+
+    });
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável realizar o filtro de busca na     |
+     * |tabela de arquivos, utilizando o campo nome como     |
+     * |referência.                                          |
+     * =======================================================
+     */
+    function searchProject() {
+        const input = document.getElementById("searchProject"); /*Variável que contém o elemento de tela de busca na tabela.*/
+        const filter = input.value.toUpperCase();            /*Variável que contém o valor do campo de busca em upper case.*/
+        const table = document.getElementById("projectTable");  /*Variável que contém o elemento de tela da tabela de usuários.*/
+        const tr = table.getElementsByTagName("tr");         /*Variável que contém os elementos de tela com tag <tr>.*/
+        
+        let txtValue; /*Variável que conterá o texto da posição.*/
+        let td;       /*Variável que conterá o elemento de tela com tag <td>.*/
+        
+        /*Loop responsável por percorrer todas as linhas da tabela procurando pelo valor buscado.*/
+        for (let i = 0; i < tr.length; i++) {
+            /*Atribuição do terceiro item da linha.*/
+            td = tr[i].getElementsByTagName("td")[2];
+            if(td) {
+                /*Atribuição do conteúdo da posição.*/
+                txtValue = td.textContent || td.innerText;
+                /*Verificação se o valor buscado está contido no item.*/
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    /*Torna a linha visível.*/
+                    tr[i].style.display = "";
+                } else {
+                    /*Torna a linha invisível.*/
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por buscar todos os documentos     |
+     * |disponíveis no servidor para serem listados.          |
+     * ========================================================
+     */
+    function listProject() {
+        /**
+         * Chamada axios para a rota selectPaymentAuthorization para buscar todos os documentos gerados.
+         */
+        axios.post("/listProject", {idProject: 0})
+            .then(function (response) {
+                /*Chamada da função que torna o objeto user imutável.*/
+                Object.freeze(response);
+                /* Tratamento do retorno.*/
+                if (response.data.status == "success") {
+                    /*Variável que contém os documentos retornados pelo servidor.*/
+                    const projects = response.data.data;
+
+                    /*Variável de manipulação do elemento fileList.*/
+                    const list = document.getElementById("projectList");
+                    
+                    /*Limpeza dos elementos da tabela fileList.*/
+                    list.innerHTML = "";
+
+                    /*Loop responsável por renderizar cada documento na tabela.*/
+                    projects.forEach(element => {
+                        list.innerHTML += templateListProject(element);
+                    });
+                } else {
+                    /*Atribuição da mensagem de retorno do servidor.*/
+                    let msg = response.data.msg;
+                    /*Verificação se foi enviada mais de uma mensagem.*/
+                    if(Array.isArray(response.data.msg)) {
+                        /*Atribuição de string vazia a variável.*/
+                        msg = "";
+                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                        for (const i in response.data.msg) {
+                            msg += response.data.msg[i].msg;
+                            msg += "\n";
+                        }
+                    } 
+                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                    alert(msg);
+                }
+            })
+            .catch(function (error) {
+                /*Tratamento de erro.*/
+                alert("ERROR");
+                console.log(error);
+            });
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por chamar a rota de download do  |
+     * |arquivo, passando como parâmetro o path do arquivo   |
+     * =======================================================
+     */
+    function downloadModel(idProject) {
+        /*Chamada da função que torna o objeto user imutável.*/
+        Object.freeze(idProject);
+        window.open("/download?idProject=" + idProject, "_blank");
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por retornar um template html de  |
+     * |um determinado item da tabela, correspondente a um   |
+     * |arquivo.                                             |
+     * =======================================================
+     */
+    function templateListProject(project) {
+        return `
+            <td>
+                <i class="btn fas fa-upload btn-primary" onClick="uploadDataset(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;"></i>
+            </td>
+            <td>
+                <i class="btn fas fa-download btn-primary" onClick="downloadModel(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;"></i>
+            </td>
+            <td>${project.projectName}</td>
+            <td>${project.className}</td>
+            <td>${project.statusName}</td>
+            <td>
+                <i class="btn fas fa-trash btn-danger" onClick="deleteProject(\'${project.idProject}\');"></i>
+            </td>
+        `;
+    }
+/*============================================================================*/
+
+</script>
+
+</html>
