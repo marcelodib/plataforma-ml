@@ -1,0 +1,28 @@
+{
+  "name": "eccnno-web-backend",
+  "version": "1.0.0",
+  "description": "ECCNNO Web Backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "connect-sqlite3": "^0.9.11",
+    "consign": "^0.1.6",
+    "dotenv": "^8.2.0",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "express-validator": "^6.4.0",
+    "is-empty": "^1.2.0",
+    "morgan": "^1.9.1",
+    "multer": "^1.4.2",
+    "mysql": "^2.17.1",
+    "nodemailer": "^6.4.2",
+    "token": "^0.1.0"
+  }
+}
