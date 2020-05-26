@@ -1,0 +1,128 @@
+<%include ../common/header.ejs%>
+
+<link rel="stylesheet" type="text/css" href="css/customForm.css">
+
+<!-- CONTENT -->
+<div class="container">
+
+    <br><br>
+
+    <div class="divCenter">
+        <h3>Criando Novo Projeto &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+        <br>
+        <form action="javascript:createProject()" method="POST">
+
+            <!-- input  -->
+            <div class="form-group">
+                <label><i class="fas fa-hdd"></i> Nome do Projeto</label>
+                <input type="text" name="projectName" id="projectName" class="form-control" required>
+            </div>
+
+            <!-- input  -->
+            <div class="form-group">
+                <label><i class="fas fa-tag"></i> Nome do objeto (*Deve ser igual ao label do Dataset)</label>
+                <input type="text" name="className" id="className" class="form-control" required>
+            </div>
+
+            <button class="btn btn-primary btnLeft" type="submit">Salvar</button>
+        </form>
+    </div>
+
+    <br>
+    <br>
+</div>
+<!-- /CONTENT -->
+
+<%include ../common/footer.ejs%>
+
+<script>
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável executar todas as rotinas iniciais|
+     * |da página assim que ela é carregada.                 |
+     * =======================================================
+     */
+    window.onload = () => {
+        /*Chamada da função que adiciona os itens a side bar.*/
+        setSideBarTitle("Criar Projeto", "fa-plus")
+    };
+    $(document).ready(function () {
+
+        /*Chamada da função que ativa a side bar.*/
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por tratar os dados do formulário e|
+     * |realizar o envio dos dados para o servidor gerar uma  |
+     * |nova autorização de pagamento.                        |
+     * ========================================================
+     */
+    function createProject() {
+
+        const project = {
+            projectName: document.getElementById("projectName").value, /*Atributo que contém o nome do projeto.*/
+            className  : document.getElementById("className").value,   /*Atributo que contém o nome do objeto a ser detectado.*/
+        };
+
+        /*Chamada da função que torna o objeto user imutável.*/
+        Object.freeze(project);
+
+        /*Verificação do tipo de movimento da autorização de pagamento.*/
+        if(project.projectName == null || project.projectName == undefined || project.projectName == "" || project.projectName.length > 127) {
+            alert("Nome do Projeto inválido!");
+            return;
+        }
+
+        /*Verificação do ci financeiro da autorização de pagamento.*/
+        if(project.className == null || project.className == undefined || project.className == "" || project.className.length > 63) {
+            alert("Nome do Objeto inválido!");
+            return;
+        }
+        
+        /**
+         * Chamada axios para a rota insertPaymentAuthorization para inserir uma nova autorização de pagamento no sistema.
+         */
+        axios.post("/createProject", project)
+            .then((response) => {
+                /*Chamada da função que torna o objeto user imutável.*/
+                Object.freeze(response);
+                /* Tratamento do retorno.*/
+                if (response.data.status == "success") {
+                    /*Alerta o usuário com a mensagem do servidor.*/
+                    alert(response.data.msg);
+                    window.location.href = "/listProject";
+                }
+                else{
+                    /*Atribuição da mensagem de retorno do servidor.*/
+                    let msg = response.data.msg;
+                    /*Verificação se foi enviada mais de uma mensagem.*/
+                    if(Array.isArray(response.data.msg)) {
+                        /*Atribuição de string vazia a variável.*/
+                        msg = "";
+                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                        for (const i in response.data.msg) {
+                            msg += response.data.msg[i].msg;
+                            msg += "\n";
+                        }
+                    } 
+                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                    alert(msg);
+                }
+            })
+            .catch((error) => {
+                /*Tratamento de erro.*/
+                alert("ERROR");
+                console.log(error);
+            });
+    }
+/*============================================================================*/
+</script>
+
+</html>
