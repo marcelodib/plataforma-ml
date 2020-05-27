@@ -101,26 +101,17 @@ module.exports = function (app) {
         ], function (req, res) {
                 /*Atribuição da função isValid, e hasPermission para validação do token.*/
                 const isValid = app.app.controllers.sign.isValid;
-                /*Verificação se o usuário possui permissão para acessar essa rota.*/
-                if (req.session.token != undefined   && 
-                    isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
-                    /*Chamada da função que valida os dados da requisição.*/
-                    const errors = validationResult(req)
-                    /*Verificação se os parâmetros não apresentam inconsistências.*/            
-                    if (!errors.isEmpty()) {
-                        /*Envio da respostas.*/
-                        res.send({status: "error", msg: errors.array()});
-                        return;
-                    }
-                    else {
-                        /*Chamada do controller parar realizar a inserção do novo usuário.*/
-                        app.app.controllers.sign.signUp(app, req, res);
-                    }
+                /*Chamada da função que valida os dados da requisição.*/
+                const errors = validationResult(req)
+                /*Verificação se os parâmetros não apresentam inconsistências.*/            
+                if (!errors.isEmpty()) {
+                    /*Envio da respostas.*/
+                    res.send({status: "error", msg: errors.array()});
+                    return;
                 }
                 else {
-                    /*Envio da respostas.*/
-                    res.send({status: "error", msg: "Acesso Negado!"});
-                    return;
+                    /*Chamada do controller parar realizar a inserção do novo usuário.*/
+                    app.app.controllers.sign.signUp(app, req, res);
                 }
             }
         );
