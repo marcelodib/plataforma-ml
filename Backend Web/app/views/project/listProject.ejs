@@ -1,4 +1,5 @@
 <%include ../common/header.ejs%>
+<link rel="stylesheet" type="text/css" href="css/dragAndDrop.css">
 
 <!-- CONTENT -->
 <br><br><br><br>
@@ -24,12 +25,50 @@
         </table>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-secondary" id="exampleModalLongTitle">Importando Dataset</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="item-inner">
+                    <div class="item-content">
+                        <div class="file-upload"> 
+                            <label style="cursor: pointer;" for="file_upload"> <img src="" alt="" class="uploaded-file">
+                                <div class="h-100">
+                                    <div class="dplay-tbl">
+                                        <div class="dplay-tbl-cell"> <i class="fa fa-cloud-upload"></i>
+                                            <h5><b>Drag and Drop .zip</b></h5>
+                                            <h6><i class="fas fa-cloud-upload-alt"></i></h6>
+                                            <h6 class="mt-10 mb-70">Ou clique aqui</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input data-required="file" type="file" name="dataset" id="dataset" class="file-input" accept=".zip" value="" >
+                            </label> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="uploadDataset();" style="background-color: #e18451; border-color: #e18451;">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- /CONTENT -->
 
 
 <%include ../common/footer.ejs%>
 
 <script>
+    let idProjectSelected = 0;
 /*============================================================================*/
     /**
      * =======================================================
@@ -150,10 +189,72 @@
      * |arquivo, passando como parâmetro o path do arquivo   |
      * =======================================================
      */
+    function uploadDataset() {
+        /*Tratamento se foi feito o upload da foto do estacionamento.*/
+        if (document.getElementById("dataset").files[0] == undefined) {
+            alert("É necessário selecionar um dataset compactado em .zip!");
+            return;
+        }
+
+        if(idProjectSelected < 1) {
+            alert("É necessário selecionar um projeto!");
+            return;
+        }
+
+        let dataset = new FormData();
+        dataset.append("dataset", document.getElementById("dataset").files[0]);
+
+        axios({
+            method: 'post',
+            url: '/uploadDataset?idProject=' + idProjectSelected,
+            data: dataset,
+            header: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+            .then((response) => {
+                /*Tratamento do retorno.*/
+                if (response.data.status == "success") {
+                    alert(response.data.msg);
+                    window.location.href = "/listProject"
+                } else {
+                    console.log(response.data);
+                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor.*/
+                    alert(response.data.msg);
+                }
+            })
+            .catch((error) => {
+                /*Tratamento de erro*/
+                alert("ERROR" + error);
+                console.log(error);
+            });
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por chamar a rota de download do  |
+     * |arquivo, passando como parâmetro o path do arquivo   |
+     * =======================================================
+     */
     function downloadModel(idProject) {
         /*Chamada da função que torna o objeto user imutável.*/
         Object.freeze(idProject);
         window.open("/download?idProject=" + idProject, "_blank");
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por chamar a rota de download do  |
+     * |arquivo, passando como parâmetro o path do arquivo   |
+     * =======================================================
+     */
+    function setIdProject(idProject) {
+        /*Chamada da função que torna o objeto user imutável.*/
+        idProjectSelected = idProject;
     }
 /*============================================================================*/
 
@@ -168,7 +269,7 @@
     function templateListProject(project) {
         return `
             <td>
-                <i class="btn fas fa-upload btn-primary" onClick="uploadDataset(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;"></i>
+                <i class="btn fas fa-upload btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;" data-toggle="modal" data-target="#exampleModalCenter"></i>
             </td>
             <td>
                 <i class="btn fas fa-download btn-primary" onClick="downloadModel(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;"></i>
