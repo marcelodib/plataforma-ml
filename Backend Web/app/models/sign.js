@@ -35,13 +35,13 @@ model.prototype.signIn = function (userInfo, callback) {
  * |a base de dados, inserindo um novo usuário.                   |
  * ================================================================
  */
-model.prototype.signUp = function (user, callback) {
+model.prototype.signUp = function (user, callback) { 
     /*Chamada da função que executa a query de inserção de um novo usuário na base de dados.*/
     this._connection.query('INSERT INTO user (userName, UserEmail, userPassword, userPhone) VALUES (' +
         '\'' + user.userName     + '\', ' +
         '\'' + user.userEmail    + '\', ' +
         '\'' + user.userPassword + '\', ' +
-        '\'' + user.userPhone    + '\'', callback);
+        '\'' + user.userPhone    + '\')', callback);
 }
 /*============================================================================*/
 
