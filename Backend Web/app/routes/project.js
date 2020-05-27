@@ -188,21 +188,25 @@ module.exports = function (app) {
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
         if (req.session.token != undefined && 
             isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
+                const idProject = req.query.idProject;
+
                 const storage = multer.diskStorage({
                     destination: function (req, file, callback) {
-                        callback(null, './uploads');
+                        callback(null, './upload');
                     },
                     filename: function (req, file, callback) {
-                        callback(null, file.fieldname + '-' + Date.now());
+                        callback(null, file.fieldname + idProject +  '.zip');
                     }
                 });
-                const upload = multer({ storage : storage}).single('userPhoto');
+                const upload = multer({ storage : storage}).single('dataset');
                 
                 upload(req,res,function(err) {
                     if(err) {
-                        return res.end("Error uploading file.");
+                        res.send({status: "error", msg: "Falha no upload do dataset!"});
+                        return;
                     }
-                    res.end("File is uploaded");
+                    res.send({status: "success", msg: "Upload realizado com sucesso!\nIniciando Treinamento..."});
+                    return;
                 });
                 
             return;
