@@ -1,6 +1,7 @@
 /*===============================IMPORT MODULES===============================*/
 const { check, validationResult } = require('express-validator'); /*Modulo responsável por fazer a validação dos dados que chegam nas requisições.*/
 const multer = require('multer');
+const {unzip} = require("../utils/shell"); /*Modulo responsável por gerar log de eventos de erro.*/
 /*============================================================================*/
 
 /*================================USER ROUTES=================================*/
@@ -236,10 +237,12 @@ module.exports = function (app) {
             isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
             
             /*Atribuição do path do arquivo passado como parâmetro na requisição.*/
-            const idProject   = req.query.idProject;
+            //const idProject   = req.query.idProject;
 
-            const path = "./users/" + req.session.userEmail + "/projects/" + idProject + "/models/model.tflite" 
-
+            //const path = "./users/" + req.session.userEmail + "/projects/" + idProject + "/models/model.tflite" 
+            const path = "../upload/detect.tflite" 
+            startTrain();
+            
             res.download(path);
             return;
         } 
