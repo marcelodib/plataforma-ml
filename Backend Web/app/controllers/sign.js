@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');         /*Modulo responsável por gerar o ha
 const empty = require('is-empty');          /*Modulo responsável por fazer a verificação dos dados retornados pelo banco.*/
 const token = require('token');             /*Modulo responsável por gerar o token do usuário.*/
 const {errorLog} = require("../utils/log"); /*Modulo responsável por gerar log de eventos de erro.*/
+const {mkdirUser} = require("../utils/shell"); /*Modulo responsável por gerar log de eventos de erro.*/
 /*============================================================================*/
 
 /*================================CONFIG TOKEN================================*/
@@ -133,7 +134,8 @@ module.exports.signUp = function (app, req, res) {
 			res.send({status: "none", msg: "Usuário não foi inserido!"});
 			return;
 		} else {
-
+			
+			mkdirUser(user.userEmail);
 			/*Envio da respostas*/
 			res.send({status: "success", msg: "Usuário inserido com sucesso!"});
 			return;
