@@ -11,6 +11,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
 
+import sys
 import os
 import io
 import pandas as pd
@@ -26,10 +27,11 @@ flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 flags.DEFINE_string('image_dir', '', 'Path to images')
 FLAGS = flags.FLAGS
 
+label = sys.argv[1]
 
 # TO-DO replace this with label map
 def class_text_to_int(row_label):
-    if row_label == 'placa':
+    if row_label == label:
         return 1
     else:
         None

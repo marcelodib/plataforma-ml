@@ -1,8 +1,10 @@
+import sys
 import os
 import glob
 import pandas as pd
 import xml.etree.ElementTree as ET
 
+userPath = sys.argv[1]
 
 def xml_to_csv(path):
     xml_list = []
@@ -27,9 +29,9 @@ def xml_to_csv(path):
 
 def main():
     for directory in ['test', 'train']:
-        image_path = os.path.join(os.getcwd(), 'images/{}'.format(directory))
+        image_path = os.path.join(os.getcwd(), userPath + 'dataset/{}'.format(directory))
         xml_df = xml_to_csv(image_path)
-        xml_df.to_csv('data/{}_labels.csv'.format(directory), index=None)
+        xml_df.to_csv(userPath + 'config/{}_labels.csv'.format(directory), index=None)
         print('Successfully converted xml to csv.')
 
 
