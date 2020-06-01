@@ -1,7 +1,7 @@
 /*===============================IMPORT MODULES===============================*/
 const { check, validationResult } = require('express-validator'); /*Modulo responsável por fazer a validação dos dados que chegam nas requisições.*/
 const multer = require('multer');
-const {unzip} = require("../utils/shell"); /*Modulo responsável por gerar log de eventos de erro.*/
+const {unzip, startTrain} = require("../utils/shell"); /*Modulo responsável por gerar log de eventos de erro.*/
 /*============================================================================*/
 
 /*================================USER ROUTES=================================*/
@@ -193,19 +193,23 @@ module.exports = function (app) {
 
                 const storage = multer.diskStorage({
                     destination: function (req, file, callback) {
-                        callback(null, './upload');
+                        callback(null, '/home/marcelo/Desktop/ECCNNO/Users/' + req.session.userEmail + '/projects/' + idProject);
                     },
                     filename: function (req, file, callback) {
-                        callback(null, file.fieldname + idProject +  '.zip');
+                        callback(null, file.fieldname + '.zip');
                     }
                 });
                 const upload = multer({ storage : storage}).single('dataset');
                 
                 upload(req,res,function(err) {
                     if(err) {
-                        res.send({status: "error", msg: "Falha no upload do dataset!"});
+                        res.send({status: "error", msg: "Falha no upload do dataset!" + err});
                         return;
                     }
+
+                    unzip(req.session.userEmail, idProject);
+                    startTrain(req.session.userEmail, idProject, "placa");
+
                     res.send({status: "success", msg: "Upload realizado com sucesso!\nIniciando Treinamento..."});
                     return;
                 });
@@ -237,11 +241,10 @@ module.exports = function (app) {
             isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
             
             /*Atribuição do path do arquivo passado como parâmetro na requisição.*/
-            //const idProject   = req.query.idProject;
+            const idProject   = req.query.idProject;
 
             //const path = "./users/" + req.session.userEmail + "/projects/" + idProject + "/models/model.tflite" 
             const path = "../upload/detect.tflite" 
-            startTrain();
             
             res.download(path);
             return;
