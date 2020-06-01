@@ -244,7 +244,7 @@ module.exports = function (app) {
             const idProject   = req.query.idProject;
 
             //const path = "./users/" + req.session.userEmail + "/projects/" + idProject + "/models/model.tflite" 
-            const path = "../upload/detect.tflite" 
+            const path = "/home/marcelo/Desktop/ECCNNO/Users/" + req.session.userEmail + "/projects/" + idProject + "/tflite/detect.tflite" 
             
             res.download(path);
             return;
