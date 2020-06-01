@@ -197,9 +197,9 @@ data_augmentation_options {
 
 train_input_reader: {
 tf_record_input_reader {
-    input_path: "~/Desktop/ECCNNO/Users/${user}/projects/${project}/config/train.record"
+    input_path: "/home/marcelo/Desktop/ECCNNO/Users/${user}/projects/${project}/config/train.record"
 }
-label_map_path: "~/Desktop/ECCNNO/Users/${user}/projects/${project}/config/object-detection.pbtxt"
+label_map_path: "/home/marcelo/Desktop/ECCNNO/Users/${user}/projects/${project}/config/object-detection.pbtxt"
 }
 
 eval_config: {
@@ -211,9 +211,9 @@ max_evals: 10
 
 eval_input_reader: {
 tf_record_input_reader {
-    input_path: "~/Desktop/ECCNNO/Users/${user}/projects/${project}/config/test.record"
+    input_path: "/home/marcelo/Desktop/ECCNNO/Users/${user}/projects/${project}/config/test.record"
 }
-label_map_path: "~/Desktop/ECCNNO/Users/${user}/projects/${project}/config/object-detection.pbtxt"
+label_map_path: "/home/marcelo/Desktop/ECCNNO/Users/${user}/projects/${project}/config/object-detection.pbtxt"
 shuffle: false
 num_readers: 1
 }
