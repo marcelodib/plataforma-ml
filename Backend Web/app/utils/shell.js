@@ -20,22 +20,22 @@ module.exports.mkdirProject = function (user, project) {
     }
 }
 
-module.exports.unzip = async function () {
+module.exports.unzip = function (user, project) {
 
-    const exec = util.promisify(require('child_process').exec);
+    const execSync = require('child_process').execSync;
 
-    const { stderr } = await exec('sh ~/Desktop/ECCNNO/Machine_Learning/shellScripts/unzip.sh');
+    const { stderr } = execSync('sh ~/Desktop/ECCNNO/Machine_Learning/shellScripts/unzip.sh ' + user + ' ' + project);
 
     if (stderr) {
         console.error(`error: ${stderr}`);
     }
 }
 
-module.exports.startTrain = async function () {
+module.exports.startTrain = async function (user, project, label) {
 
     const exec = util.promisify(require('child_process').exec);
 
-    const { stderr } = await exec('sh ~/Desktop/ECCNNO/Machine_Learning/shellScripts/train.sh');
+    const { stderr } = await exec('sh ~/Desktop/ECCNNO/Machine_Learning/shellScripts/train.sh ' + user + " " + project + " " + label);
 
     if (stderr) {
         console.error(`error: ${stderr}`);
