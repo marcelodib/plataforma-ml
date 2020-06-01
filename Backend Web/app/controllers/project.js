@@ -1,6 +1,8 @@
 /*===============================IMPORT MODULES===============================*/
 const empty = require('is-empty');          /*Modulo responsável por fazer a verificação dos dados retornados pelo banco.*/
 const {errorLog} = require("../utils/log"); /*Modulo responsável por gerar log de eventos de erro.*/
+const {mkdirProject} = require("../utils/shell"); /*Modulo responsável por gerar log de eventos de erro.*/
+const {createConfig, createPbtxt} = require("../utils/configProject"); /*Modulo responsável por gerar log de eventos de erro.*/
 /*============================================================================*/
 
 /*============================PROJECT CONTROLLERS=============================*/
@@ -52,7 +54,12 @@ module.exports.createProject = function (app, req, res) {
                 });
                 return;
             } else {
-
+                const idProjet = result.insertId;
+                
+                mkdirProject(req.session.userEmail, idProjet);
+                createConfig(req.session.userEmail, idProjet);
+                createPbtxt(req.session.userEmail, idProjet, project.className);
+                
                 /*Envio da respostas*/
                 res.send({
                     status: "success",
