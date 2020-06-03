@@ -1,9 +1,12 @@
-cd ~/Desktop/models/research/object_detection/legacy/tflite/
-
 tflite_convert \
-    --output_file=detect.tflite \
-    --graph_def_file=tflite_graph.pb \
-    --input_arrays=normalized_input_image_tensor \
-    --output_arrays='TFLite_Detection_PostProcess','TFLite_Detection_PostProcess:1','TFLite_Detection_PostProcess:2','TFLite_Detection_PostProcess:3' \
-    --input_shapes=1,300,300,3 \
-    --allow_custom_ops
+--output_file=/home/marcelo/Desktop/ECCNNO/Users/$1/projects/$2/tflite/detect.tflite \
+--graph_def_file=/home/marcelo/Desktop/ECCNNO/Users/$1/projects/$2/graph/tflite_graph.pb \
+--output_format=TFLITE \
+--input_arrays=normalized_input_image_tensor \
+--input_shapes=1,300,300,3 \
+--inference_type=QUANTIZED_UINT8 \
+--mean_values=128 \
+--std_dev_values=128 \
+--change_concat_input_ranges=false \
+--output_arrays='TFLite_Detection_PostProcess','TFLite_Detection_PostProcess:1','TFLite_Detection_PostProcess:2','TFLite_Detection_PostProcess:3' \
+--allow_custom_ops
