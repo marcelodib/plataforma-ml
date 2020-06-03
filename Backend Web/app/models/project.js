@@ -115,9 +115,9 @@ model.prototype.deleteProject = function (idProject, app, req, res, callback) {
  * |a base de dados, atualizando o status do projeto requisitado.  |
  * =================================================================
  */
-model.prototype.updateStatusProject = function (idStatus, callback) {
+model.prototype.updateStatusProject = function (project, callback) {
     /*Chamada da função que executa a query de atualização de status do projeto na base de dados.*/
-    this._connection.query('UPDATE project SET idStatus = ' + idStatus, callback);
+    this._connection.query('UPDATE project SET idStatus = ' + (project.idStatus + 1) + ' WHERE idProject = ' + project.idProject, callback);
 }
 /*============================================================================*/
 

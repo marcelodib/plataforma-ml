@@ -189,31 +189,9 @@ module.exports = function (app) {
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
         if (req.session.token != undefined && 
             isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
-                const idProject = req.query.idProject;
-
-                const storage = multer.diskStorage({
-                    destination: function (req, file, callback) {
-                        callback(null, '/home/marcelo/Desktop/ECCNNO/Users/' + req.session.userEmail + '/projects/' + idProject);
-                    },
-                    filename: function (req, file, callback) {
-                        callback(null, file.fieldname + '.zip');
-                    }
-                });
-                const upload = multer({ storage : storage}).single('dataset');
                 
-                upload(req,res,function(err) {
-                    if(err) {
-                        res.send({status: "error", msg: "Falha no upload do dataset!" + err});
-                        return;
-                    }
-
-                    unzip(req.session.userEmail, idProject);
-                    startTrain(req.session.userEmail, idProject, "placa");
-
-                    res.send({status: "success", msg: "Upload realizado com sucesso!\nIniciando Treinamento..."});
-                    return;
-                });
-                
+            /*Chamada do controller para realizar o upload do dataset de um determinado projeto.*/
+            app.app.controllers.project.uploadDataset(app, req, res);
             return;
         } 
         else {
@@ -243,7 +221,6 @@ module.exports = function (app) {
             /*Atribuição do path do arquivo passado como parâmetro na requisição.*/
             const idProject   = req.query.idProject;
 
-            //const path = "./users/" + req.session.userEmail + "/projects/" + idProject + "/models/model.tflite" 
             const path = "/home/marcelo/Desktop/ECCNNO/Users/" + req.session.userEmail + "/projects/" + idProject + "/tflite/detect.tflite" 
             
             res.download(path);

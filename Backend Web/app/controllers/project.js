@@ -207,6 +207,121 @@ module.exports.deleteProject = function (app, req, res) {
 }
 /*============================================================================*/
 
+/*===============================UPLOAD DATASET===============================*/
+/**
+ * ================================================================
+ * |Controller uploadDataset responsável por verificar se existe  |
+ * |sessão aberta para acessar esse controller.                   |
+ * |Caso as condições sejam verdadeiras, é verificado os dados    |
+ * |enviados e realizado o upload do dataset do projeto.          |
+ * ================================================================
+ */
+module.exports.uploadDataset = function (app, req, res) {
+
+    /*Atribuição da função isValid para validação do token.*/
+    const isValid = app.app.controllers.sign.isValid;
+    /*Verificação se o usuário possui permissão para acessar essa rota.*/
+    if (req.session.token != undefined && 
+        isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {      
+        
+        /*Variável que contém o identificador do projeto que receberá o dataset enviado.*/
+        const idProject = req.query.idProject;
+
+        /*Chamada da função que torna o objeto user imutável.*/
+        Object.freeze(idProject);
+        
+        /*Verificação do idProject enviado como parâmetro.*/
+        if (idProject == undefined || idProject == null || isNaN(idProject) || idProject < 1) {
+            res.send({
+                status: "error",
+                msg: "Identificador do projeto inválido!",
+                data: error
+            });
+            return;
+        }
+
+		/*Abertura de conexão com o banco de dados*/
+		const connection = app.config.dbConnection();
+		const model = new app.app.models.project(connection);
+
+		/*Chamada da função que executa a query de busca do projeto requisitado na base de dados*/
+		model.listProject(idProject, app, req, res, function (error, result) {
+
+			/*Verificação de erro no retorno do banco de dados*/
+			if (error) {
+                errorLog(req.session.userEmail, "listProject", "listProject", "Erro ao acessar a base de dados para buscar projeto.", error);
+				res.send({
+                    status: "error",
+                    msg: "Erro ao acessar a base de dados para buscar projeto!",
+                    data: error
+                });
+				return;
+			}
+			/*Verificação se o retorno do banco de dados está vazio*/
+			else if (empty(result) || result.affectedRows == 0) {
+                errorLog(req.session.userEmail, "listProject", "listProject", "Nenhum projeto foi encontrado.", result);
+				res.send({
+                    status: "none",
+                    msg: "Nenhum projeto foi encontrado!"
+                });
+				return;
+			} else {
+                /*Variável que contém o projeto retornado com a busca*/
+                const project = result[0];
+
+                /*Verificação se o projeto encontrado condiz com o requisitado.*/
+                if (project.idProject == idProject && project.idStatus == 1) {
+
+                    /*Chamada das funçoẽs que realiza a configuração do armazenamento do dataset.*/
+                    const storage = multer.diskStorage({
+                        destination: function (req, file, callback) {
+                            callback(null, '/home/marcelo/Desktop/ECCNNO/Users/' + req.session.userEmail + '/projects/' + idProject);
+                        },
+                        filename: function (req, file, callback) {
+                            callback(null, 'dataset.zip');
+                        }
+                    });
+
+                    const upload = multer({ storage : storage}).single('dataset');
+
+                    upload(req,res, async function(err) {
+                        /*Verificação se ocorreu algum erro no recebimento do dataset.*/
+                        if(err) {
+                            res.send({status: "error", msg: "Falha no upload do dataset!" + err});
+                            return;
+                        }
+                        
+                        /*Chamada da função que realiza o unzip do dataset.*/
+                        unzip(req.session.userEmail, idProject);
+
+                        /*Atribuição da função isValid para validação do token.*/
+                        const returnUpdate = await app.app.controllers.project.updateStatusProject(project, app, req);
+
+                        if (!returnUpdate) {
+                            res.send({status: "error", msg: "Ocorreu um erro na atualização do status do projeto!"});
+                            return;
+                        }
+
+                        /*Chamada da função que realiza a configuração final e inicia o treinamento.*/
+                        startTrain(req.session.userEmail, idProject, project.className);
+
+                        res.send({status: "success", msg: "Upload realizado com sucesso!\nIniciando Treinamento..."});
+                        return;
+                    });
+                } else {
+                    res.send({status: "success", msg: "Upload realizado com sucesso!\nIniciando Treinamento..."});
+                    return;
+                }
+			}
+		});
+	} else {
+		/*Envio da respostas*/
+		res.send({status: "error", msg: "Acesso Negado!"});
+		return;
+	}
+}
+/*============================================================================*/
+
 /*============================UPDATE STATUS PROJECT===========================*/
 /**
  * ================================================================
@@ -223,7 +338,7 @@ module.exports.updateStatusProject = function (project, app, req) {
     const connection = app.config.dbConnection();
     const model = new app.app.models.project(connection);
     
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
         /*Chamada da função que executa a query de remoção do projeto requisitado na base de dados*/
         model.updateStatusProject(project, function (error, result) {
 
