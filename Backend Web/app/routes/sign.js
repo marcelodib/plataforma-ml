@@ -94,10 +94,10 @@ module.exports = function (app) {
     */
     app.post('/signUp', 
         [
-            check('userName'    , 'Nome inválido!') .not().isEmpty().escape().isString().isLength({ max: 63 }),
+            check('userName'    , 'Nome inválido!') .not().isEmpty().escape().isString().isLength({ max: 127 }),
             check('userEmail'   , 'Email inválido!').not().isEmpty().escape().isEmail().isLength({ max: 127 }),
-            check('userPhone'   , 'Phone inválido!').not().isEmpty().escape().isString().isLength({ min: 14, max: 15 }), 
-            check('userPassword', 'Senha inválida!').not().isEmpty().isLength({ min: 8, max: 32 })
+            check('userPhone'   , 'Phone inválido!').not().isEmpty().escape().isString().isLength({ min: 13, max: 15 }), 
+            check('userPassword', 'Senha inválida!').not().isEmpty().isLength({ min: 8, max: 31 })
         ], function (req, res) {
                 /*Atribuição da função isValid, e hasPermission para validação do token.*/
                 const isValid = app.app.controllers.sign.isValid;

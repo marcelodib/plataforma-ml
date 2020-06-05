@@ -67,17 +67,17 @@
                     <div class="form-group">
                         <label><i class="fas fa-phone"></i> Telefone</label>
                         <input type="tel" placeholder="(99)9999-9999" name="userPhone" id="userPhone" class="form-control"
-                            pattern="\({0,1}[0-9]{2}\){0,1} {0,1}[0-9]{4,5}-{0,1}[0-9]{4}$" minlength="11" maxlength="15" required>
+                            pattern="\({1}[0-9]{2}\){1} {0,1}[0-9]{4,5}-{1}[0-9]{4}$" minlength="13" maxlength="15" required>
                     </div>
 
                     <div class="form-group">
                         <label><i class="fas fa-key"></i> Senha</label>
-                        <input type="password" name="password" id="password" class="form-control" minlength="8" maxlength="32" required>
+                        <input type="password" name="password" id="password" class="form-control" minlength="8" maxlength="31" required>
                     </div>
 
                     <div class="form-group">
                         <label><i class="fas fa-key"></i> Confirmar Senha</label>
-                        <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" minlength="8" maxlength="32" required>
+                        <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" minlength="8" maxlength="31" required>
                     </div>
 
                     <button class="btn btn-primary btnLeft" type="submit">Salvar</button>
@@ -130,31 +130,31 @@
         }
 
         /*Verificação do nome completo do usuário.*/
-        if(user.userName == null || user.userName == undefined || user.userName == "" || user.userName.toString().length > 127 || user.userName.toString().length < 1) {
+        if(user.userName == undefined || user.userName == null || user.userName == "" || user.userName.toString().length > 127 || user.userName.toString().length < 1) {
             alert("Nome do usuário inválido!");
             return;
         }
 
         /*Verificação do email do usuário.*/
-        if(user.userEmail == null || user.userEmail == undefined || user.userEmail == "" || user.userEmail.toString().length > 127 || user.userEmail.toString().length < 1) {
+        if(user.userEmail == undefined || user.userEmail == null || user.userEmail == "" || user.userEmail.toString().length > 127 || user.userEmail.toString().length < 1) {
             alert("Email do usuário inválido!");
             return;
         }
 
         /*Verificação do celular do usuário.*/
-        if(user.userPhone == null || user.userPhone == undefined || user.userPhone == "" || user.userPhone.toString().length > 15 || user.userEmail.toString().length < 11) {
+        if(user.userPhone == undefined || user.userPhone == null || user.userPhone == "" || user.userPhone.toString().length > 15 || user.userEmail.toString().length < 13) {
             alert("Celular do usuário inválido!");
             return;
         }
 
         /*Verificação da senha do usuário.*/
-        if(password == null || password == undefined || password == "" || password.toString().length > 32 || password.toString().length < 8) {
+        if(password == undefined || password == null || password == "" || password.toString().length > 31 || password.toString().length < 8) {
             alert("Senha do usuário inválido!");
             return;
         }
 
         /*Verificação da confirmção da senha do usuário.*/
-        if(confirmPassword == null || confirmPassword == undefined || confirmPassword == "" || confirmPassword.toString().length > 32 || confirmPassword.toString().length < 8) {
+        if(confirmPassword == undefined || confirmPassword == null || confirmPassword == "" || confirmPassword.toString().length > 31 || confirmPassword.toString().length < 8) {
             alert("Confirmação da senha do usuário inválido!");
             return;
         }
@@ -171,16 +171,17 @@
 		Object.freeze(user);
 
         /**
-         * Chamada axios para a rota insertUser para inserir um novo usuário no sistema.
+         * Chamada axios para a rota signUp para inserir um novo usuário no sistema.
          */
         axios.post("/signUp", user)
             .then((response) => {
                 /*Chamada da função que torna o objeto user imutável.*/
-		        Object.freeze(response);
+                Object.freeze(response);
                 /* Tratamento do retorno.*/
                 if (response.data.status == "success") {
                     /*Alerta o usuário com a mensagem do servidor.*/
                     alert(response.data.msg);
+                    /*Redirecionamento para tela de signIn.*/
                     window.location.href = "/signIn"
                 }
                 else{
