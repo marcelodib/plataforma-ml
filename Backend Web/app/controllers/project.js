@@ -1,7 +1,8 @@
 /*===============================IMPORT MODULES===============================*/
 const empty = require('is-empty');          /*Modulo responsável por fazer a verificação dos dados retornados pelo banco.*/
+const multer = require('multer');
 const {errorLog} = require("../utils/log"); /*Modulo responsável por gerar log de eventos de erro.*/
-const {mkdirProject} = require("../utils/shell"); /*Modulo responsável por gerar log de eventos de erro.*/
+const {mkdirProject, deleteProject, unzip, startTrain} = require("../utils/shell"); /*Modulo responsável por gerar log de eventos de erro.*/
 const {createConfig, createPbtxt} = require("../utils/configProject"); /*Modulo responsável por gerar log de eventos de erro.*/
 /*============================================================================*/
 
@@ -162,7 +163,7 @@ module.exports.deleteProject = function (app, req, res) {
         const idProject = req.body.idProject;
 
         /*Chamada da função que torna o objeto user imutável.*/
-        Object.freeze(project);
+        Object.freeze(idProject);
 
 		/*Abertura de conexão com o banco de dados*/
 		const connection = app.config.dbConnection();
@@ -190,6 +191,8 @@ module.exports.deleteProject = function (app, req, res) {
                 });
 				return;
 			} else {
+
+                deleteProject(req.session.userEmail, idProject)
 				/*Envio da respostas*/
 				res.send({
                     status: "success",
@@ -303,7 +306,7 @@ module.exports.uploadDataset = function (app, req, res) {
                         }
 
                         /*Chamada da função que realiza a configuração final e inicia o treinamento.*/
-                        startTrain(req.session.userEmail, idProject, project.className);
+                        //startTrain(req.session.userEmail, idProject, project.className);
 
                         res.send({status: "success", msg: "Upload realizado com sucesso!\nIniciando Treinamento..."});
                         return;
@@ -339,7 +342,7 @@ module.exports.updateStatusProject = function (project, app, req) {
     const model = new app.app.models.project(connection);
     
     return new Promise((resolve, reject) => {
-        /*Chamada da função que executa a query de remoção do projeto requisitado na base de dados*/
+        /*Chamada da função que executa a query de atualização do status do projeto requisitado na base de dados*/
         model.updateStatusProject(project, function (error, result) {
 
             /*Verificação de erro no retorno do banco de dados*/

@@ -1,7 +1,5 @@
 /*===============================IMPORT MODULES===============================*/
 const { check, validationResult } = require('express-validator'); /*Modulo responsável por fazer a validação dos dados que chegam nas requisições.*/
-const multer = require('multer');
-const {unzip, startTrain} = require("../utils/shell"); /*Modulo responsável por gerar log de eventos de erro.*/
 /*============================================================================*/
 
 /*================================USER ROUTES=================================*/

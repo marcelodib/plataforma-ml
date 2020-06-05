@@ -99,7 +99,7 @@ model.prototype.deleteProject = function (idProject, app, req, res, callback) {
         isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {      
         
         /*Chamada da função que executa a query de remoção de um determinado projeto na base de dados.*/
-        this._connection.query('DELETE FROM project WHERE project.idProject = ' + idProject, callback);
+        this._connection.query('DELETE FROM project WHERE project.idProject = ' + idProject + " AND idUser = " + req.session.idUser, callback);
     } else {
         /*Envio da respostas.*/
         res.send({status: "error", msg: "Acesso Negado!"});
