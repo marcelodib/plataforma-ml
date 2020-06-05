@@ -20,6 +20,16 @@ module.exports.mkdirProject = function (user, project) {
     }
 }
 
+module.exports.deleteProject = function (user, project) {
+    const execSync = require('child_process').execSync;
+
+    const { stderr } = execSync('sh ~/Desktop/ECCNNO/Machine_Learning/scripts/deleteProject.sh ' + user + ' ' + project);
+
+    if (stderr) {
+        console.error(`error: ${stderr}`);
+    }
+}
+
 module.exports.unzip = function (user, project) {
 
     const execSync = require('child_process').execSync;
