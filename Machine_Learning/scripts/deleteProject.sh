@@ -1,0 +1,1 @@
+rm -rf ~/Desktop/ECCNNO/Users/$1/projects/$2/
