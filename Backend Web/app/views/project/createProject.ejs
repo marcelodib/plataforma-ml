@@ -28,8 +28,8 @@
         </form>
     </div>
 
-    <br>
-    <br>
+    <br><br>
+
 </div>
 <!-- /CONTENT -->
 
@@ -44,7 +44,7 @@
      * =======================================================
      */
     window.onload = () => {
-        /*Chamada da função que adiciona os itens a side bar.*/
+        /*Chamada da função que adiciona o titulo da side bar.*/
         setSideBarTitle("Criar Projeto", "fa-plus")
     };
     $(document).ready(function () {
@@ -60,8 +60,8 @@
     /**
      * ========================================================
      * |Função responsável por tratar os dados do formulário e|
-     * |realizar o envio dos dados para o servidor gerar uma  |
-     * |nova autorização de pagamento.                        |
+     * |realizar o envio dos dados para o servidor cadastrar  |
+     * |um novo projeto.                                      |
      * ========================================================
      */
     function createProject() {
@@ -74,20 +74,20 @@
         /*Chamada da função que torna o objeto user imutável.*/
         Object.freeze(project);
 
-        /*Verificação do tipo de movimento da autorização de pagamento.*/
+        /*Verificação do nome do projeto.*/
         if(project.projectName == null || project.projectName == undefined || project.projectName == "" || project.projectName.length > 127) {
             alert("Nome do Projeto inválido!");
             return;
         }
 
-        /*Verificação do ci financeiro da autorização de pagamento.*/
+        /*Verificação da classe(label) do projeto.*/
         if(project.className == null || project.className == undefined || project.className == "" || project.className.length > 63) {
             alert("Nome do Objeto inválido!");
             return;
         }
         
         /**
-         * Chamada axios para a rota insertPaymentAuthorization para inserir uma nova autorização de pagamento no sistema.
+         * Chamada axios para a rota createProject para cadastrar um novo projeto no sistema.
          */
         axios.post("/createProject", project)
             .then((response) => {
@@ -97,6 +97,7 @@
                 if (response.data.status == "success") {
                     /*Alerta o usuário com a mensagem do servidor.*/
                     alert(response.data.msg);
+                    /*Redireciona para página de listagem de projetos*/
                     window.location.href = "/listProject";
                 }
                 else{
