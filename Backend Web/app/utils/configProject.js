@@ -1,17 +1,24 @@
+/*===============================IMPORT MODULES===============================*/
 const fs = require('fs');
+/*============================================================================*/
 
+/*===============================CREATE CONFIG================================*/
 module.exports.createConfig = function (user, project) {
     const path = "/home/marcelo/Desktop/ECCNNO/Users/" + user + "/projects/" + project + "/config/trainConfig.config";
     const content = trainConfigContent(user, project)
     fs.writeFileSync(path, content);
 }
+/*============================================================================*/
 
+/*================================CREATE PBTXT================================*/
 module.exports.createPbtxt = function (user, project, obj) {
     const path = "/home/marcelo/Desktop/ECCNNO/Users/" + user + "/projects/" + project + "/config/object-detection.pbtxt";
     const content = pbtxtContent(obj)
     fs.writeFileSync(path, content);
 }
+/*============================================================================*/
 
+/*===============================PBTXT CONTENT================================*/
 function pbtxtContent(obj) {
 return `
 item {
@@ -20,7 +27,9 @@ item {
 }
 `;
 }
+/*============================================================================*/
 
+/*============================TRAIN CONFIG CONTENT============================*/
 function trainConfigContent (user, project) {
 return `
 # Quantized trained SSD with Mobilenet v2 on MSCOCO Dataset.
@@ -227,3 +236,4 @@ quantization {
 }
 `;
 }
+/*============================================================================*/
