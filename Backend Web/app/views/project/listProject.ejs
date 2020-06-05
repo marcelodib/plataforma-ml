@@ -44,9 +44,9 @@
                                 <div class="h-100">
                                     <div class="dplay-tbl">
                                         <div class="dplay-tbl-cell"> <i class="fa fa-cloud-upload"></i>
-                                            <h5><b>Drag and Drop .zip</b></h5>
+                                            <h5><b>Selecione um arquivo .zip</b></h5>
                                             <h6><i class="fas fa-cloud-upload-alt"></i></h6>
-                                            <h6 class="mt-10 mb-70">Ou clique aqui</h6>
+                                            <h6 class="mt-10 mb-70">clique aqui</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -77,7 +77,7 @@
      * =======================================================
      */
     window.onload = () => {
-        /*Chamada da função que adiciona os itens a side bar.*/
+        /*Chamada da função que adiciona o titulo da side bar.*/
         setSideBarTitle("Listar Projetos", "fa-list")
         listProject();
     };
@@ -94,7 +94,7 @@
     /**
      * =======================================================
      * |Função responsável realizar o filtro de busca na     |
-     * |tabela de arquivos, utilizando o campo nome como     |
+     * |tabela de projetos, utilizando o campo nome como     |
      * |referência.                                          |
      * =======================================================
      */
@@ -130,13 +130,15 @@
 /*============================================================================*/
     /**
      * ========================================================
-     * |Função responsável por buscar todos os documentos     |
-     * |disponíveis no servidor para serem listados.          |
+     * |Função responsável por buscar todos os projectos do   |
+     * |usuário disponíveis no servidor para serem listados.  |
      * ========================================================
      */
     function listProject() {
+        /*Chamada da função que limpa a tabela de projetos.*/
+        clearList();
         /**
-         * Chamada axios para a rota selectPaymentAuthorization para buscar todos os documentos gerados.
+         * Chamada axios para a rota listProject para buscar todos os projetos do usuário.
          */
         axios.post("/listProject", {idProject: 0})
             .then(function (response) {
@@ -144,16 +146,13 @@
                 Object.freeze(response);
                 /* Tratamento do retorno.*/
                 if (response.data.status == "success") {
-                    /*Variável que contém os documentos retornados pelo servidor.*/
+                    /*Variável que contém os projetos retornados pelo servidor.*/
                     const projects = response.data.data;
 
-                    /*Variável de manipulação do elemento fileList.*/
+                    /*Variável de manipulação do elemento projectList.*/
                     const list = document.getElementById("projectList");
-                    
-                    /*Limpeza dos elementos da tabela fileList.*/
-                    list.innerHTML = "";
 
-                    /*Loop responsável por renderizar cada documento na tabela.*/
+                    /*Loop responsável por renderizar cada porjeto na tabela.*/
                     projects.forEach(element => {
                         list.innerHTML += templateListProject(element);
                     });
@@ -185,69 +184,75 @@
 /*============================================================================*/
     /**
      * ========================================================
-     * |Função responsável por buscar todos os documentos     |
-     * |disponíveis no servidor para serem listados.          |
+     * |Função responsável por enviar ao servidor um pedido de|
+     * |remoção de um determinado projeto do usuário.         |
      * ========================================================
      */
     function deleteProject(idProject) {
-        /**
-         * Chamada axios para a rota selectPaymentAuthorization para buscar todos os documentos gerados.
-         */
-        axios.post("/deleteProject", {idProject: idProject})
-            .then(function (response) {
-                /*Chamada da função que torna o objeto user imutável.*/
-                Object.freeze(response);
-                /* Tratamento do retorno.*/
-                if (response.data.status == "success") {
-
-                    window.location.href = "/listProject"
-                } else {
-                    /*Atribuição da mensagem de retorno do servidor.*/
-                    let msg = response.data.msg;
-                    /*Verificação se foi enviada mais de uma mensagem.*/
-                    if(Array.isArray(response.data.msg)) {
-                        /*Atribuição de string vazia a variável.*/
-                        msg = "";
-                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                        for (const i in response.data.msg) {
-                            msg += response.data.msg[i].msg;
-                            msg += "\n";
-                        }
-                    } 
-                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
-                    alert(msg);
-                }
-            })
-            .catch(function (error) {
-                /*Tratamento de erro.*/
-                alert("ERROR");
-                console.log(error);
-            });
+        if(confirm("Você gostaria mesmo de deletar esse projeto?")) {
+            /**
+             * Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.
+             */
+            axios.post("/deleteProject", {idProject: idProject})
+                .then(function (response) {
+                    /*Chamada da função que torna o objeto user imutável.*/
+                    Object.freeze(response);
+                    /* Tratamento do retorno.*/
+                    if (response.data.status == "success") {
+                        alert(response.data.msg);
+                        /*Reload da lista de projetos*/
+                        listProject();
+                    } else {
+                        /*Atribuição da mensagem de retorno do servidor.*/
+                        let msg = response.data.msg;
+                        /*Verificação se foi enviada mais de uma mensagem.*/
+                        if(Array.isArray(response.data.msg)) {
+                            /*Atribuição de string vazia a variável.*/
+                            msg = "";
+                            /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                            for (const i in response.data.msg) {
+                                msg += response.data.msg[i].msg;
+                                msg += "\n";
+                            }
+                        } 
+                        /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                        alert(msg);
+                    }
+                })
+                .catch(function (error) {
+                    /*Tratamento de erro.*/
+                    alert("ERROR");
+                    console.log(error);
+                });
+        }        
     }
 /*============================================================================*/
 
 /*============================================================================*/
     /**
      * =======================================================
-     * |Função responsável por chamar a rota de download do  |
-     * |arquivo, passando como parâmetro o path do arquivo   |
+     * |Função responsável por realizar o upload do dataset  |
+     * |importado pelo usuário.                              |
      * =======================================================
      */
     function uploadDataset() {
-        /*Tratamento se foi feito o upload da foto do estacionamento.*/
+        /*Verificação se foi feito o upload do dataset corretamente.*/
         if (document.getElementById("dataset").files[0] == undefined) {
             alert("É necessário selecionar um dataset compactado em .zip!");
             return;
         }
 
+        /*Verificação se foi selecionado um projeto corretamente.*/
         if(idProjectSelected < 1) {
             alert("É necessário selecionar um projeto!");
             return;
         }
 
+        /*Atribuição do arquivo importado.*/
         let dataset = new FormData();
         dataset.append("dataset", document.getElementById("dataset").files[0]);
 
+        /*Chamada axios reponsável por chamar a rota uploadDataset para fazer o envio do arquivo importado pelo usuário.*/
         axios({
             method: 'post',
             url: '/uploadDataset?idProject=' + idProjectSelected,
@@ -259,10 +264,11 @@
             .then((response) => {
                 /*Tratamento do retorno.*/
                 if (response.data.status == "success") {
+                    $('#exampleModalCenter').modal('hide');
                     alert(response.data.msg);
-                    window.location.href = "/listProject"
+                    /*Reload da lista de projetos.*/
+                    listProject();
                 } else {
-                    console.log(response.data);
                     /*Alertar o usuario, caso tenha ocorrido algum erro no servidor.*/
                     alert(response.data.msg);
                 }
@@ -279,7 +285,7 @@
     /**
      * =======================================================
      * |Função responsável por chamar a rota de download do  |
-     * |arquivo, passando como parâmetro o path do arquivo   |
+     * |modelo treinado do projeto requisitado.              |
      * =======================================================
      */
     function downloadModel(idProject) {
@@ -292,13 +298,27 @@
 /*============================================================================*/
     /**
      * =======================================================
-     * |Função responsável por chamar a rota de download do  |
-     * |arquivo, passando como parâmetro o path do arquivo   |
+     * |Função responsável por salvar o id do projeto        |
+     * |selecionado pelo usuário, para realizar o upload do  |
+     * |dataset.                                             |
      * =======================================================
      */
     function setIdProject(idProject) {
-        /*Chamada da função que torna o objeto user imutável.*/
+        /*Atribuição do id do projeto selecionado na variável de controle*/
         idProjectSelected = idProject;
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por limpar os itens na tabela de  |
+     * |projetos.                                            | 
+     * =======================================================
+     */
+    function clearList() {
+        /*Limpeza dos elementos da tabela projectList.*/
+        document.getElementById("projectList").innerHTML = "";
     }
 /*============================================================================*/
 
@@ -307,16 +327,18 @@
      * =======================================================
      * |Função responsável por retornar um template html de  |
      * |um determinado item da tabela, correspondente a um   |
-     * |arquivo.                                             |
+     * |projeto.                                             |
      * =======================================================
      */
     function templateListProject(project) {
         let uploadButton = `<i class="btn fas fa-upload btn-secondary"></i>`;
         let downloadButton = `<i class="btn fas fa-download btn-secondary"></i>`;
 
+        /*Verificação do status do projeto para permitir o botão de upload.*/
         if(project.idStatus == 1) {
             uploadButton = `<i class="btn fas fa-upload btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;" data-toggle="modal" data-target="#exampleModalCenter"></i>`
         }
+        /*Verificação do status do projeto para permitir o botão de download.*/
         if(project.idStatus == 3) {
             downloadButton = `<i class="btn fas fa-download btn-primary" onClick="downloadModel(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;"></i>`
         }
