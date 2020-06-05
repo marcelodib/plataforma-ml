@@ -184,6 +184,50 @@
 
 /*============================================================================*/
     /**
+     * ========================================================
+     * |Função responsável por buscar todos os documentos     |
+     * |disponíveis no servidor para serem listados.          |
+     * ========================================================
+     */
+    function deleteProject(idProject) {
+        /**
+         * Chamada axios para a rota selectPaymentAuthorization para buscar todos os documentos gerados.
+         */
+        axios.post("/deleteProject", {idProject: idProject})
+            .then(function (response) {
+                /*Chamada da função que torna o objeto user imutável.*/
+                Object.freeze(response);
+                /* Tratamento do retorno.*/
+                if (response.data.status == "success") {
+
+                    window.location.href = "/listProject"
+                } else {
+                    /*Atribuição da mensagem de retorno do servidor.*/
+                    let msg = response.data.msg;
+                    /*Verificação se foi enviada mais de uma mensagem.*/
+                    if(Array.isArray(response.data.msg)) {
+                        /*Atribuição de string vazia a variável.*/
+                        msg = "";
+                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                        for (const i in response.data.msg) {
+                            msg += response.data.msg[i].msg;
+                            msg += "\n";
+                        }
+                    } 
+                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                    alert(msg);
+                }
+            })
+            .catch(function (error) {
+                /*Tratamento de erro.*/
+                alert("ERROR");
+                console.log(error);
+            });
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
      * =======================================================
      * |Função responsável por chamar a rota de download do  |
      * |arquivo, passando como parâmetro o path do arquivo   |
@@ -267,12 +311,21 @@
      * =======================================================
      */
     function templateListProject(project) {
+        let uploadButton = `<i class="btn fas fa-upload btn-secondary"></i>`;
+        let downloadButton = `<i class="btn fas fa-download btn-secondary"></i>`;
+
+        if(project.idStatus == 1) {
+            uploadButton = `<i class="btn fas fa-upload btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;" data-toggle="modal" data-target="#exampleModalCenter"></i>`
+        }
+        if(project.idStatus == 3) {
+            downloadButton = `<i class="btn fas fa-download btn-primary" onClick="downloadModel(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;"></i>`
+        }
         return `
             <td>
-                <i class="btn fas fa-upload btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;" data-toggle="modal" data-target="#exampleModalCenter"></i>
+                ${uploadButton}
             </td>
             <td>
-                <i class="btn fas fa-download btn-primary" onClick="downloadModel(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;"></i>
+                ${downloadButton}
             </td>
             <td>${project.projectName}</td>
             <td>${project.className}</td>
