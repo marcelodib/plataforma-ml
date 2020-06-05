@@ -10,7 +10,7 @@ USE eccnno;
 CREATE TABLE user (
     idUser            INT AUTO_INCREMENT PRIMARY KEY,
     userEmail         VARCHAR(128) NOT NULL UNIQUE,
-    userName          VARCHAR(64)  NOT NULL,
+    userName          VARCHAR(128) NOT NULL,
     userPassword      VARCHAR(256) NOT NULL,
     userPhone         VARCHAR(64)  NOT NULL,
     registrationToken VARCHAR(512)
