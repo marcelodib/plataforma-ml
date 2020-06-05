@@ -45,8 +45,8 @@ CREATE TABLE project (
 -- ============================Inserts=========================== --
 -- ============================================================== --
 
-INSERT INTO user (userName, UserEmail, userPassword, userPhone) VALUES 
-("Marcelo Dib Coutinho", "marcelo.dc98@hotmail.com", "$2a$11$baPIA0dFRI.FpXAVwCAR2./ia2hmWi24xyBf9y/tFM91dE6wwuKPa", "(19) 98273-6273");
+-- INSERT INTO user (userName, UserEmail, userPassword, userPhone) VALUES 
+-- ("Marcelo Dib Coutinho", "marcelo.dc98@hotmail.com", "$2a$11$baPIA0dFRI.FpXAVwCAR2./ia2hmWi24xyBf9y/tFM91dE6wwuKPa", "(19) 98273-6273");
 
 INSERT INTO status (statusName) VALUES
 ("Aguardando Dataset"),
