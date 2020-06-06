@@ -306,7 +306,7 @@ module.exports.uploadDataset = function (app, req, res) {
                         }
 
                         /*Chamada da função que realiza a configuração final e inicia o treinamento.*/
-                        //startTrain(req.session.userEmail, idProject, project.className);
+                        startTrain(req.session.userEmail, idProject, project.className);
 
                         res.send({status: "success", msg: "Upload realizado com sucesso!\nIniciando Treinamento..."});
                         return;
