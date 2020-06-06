@@ -46,3 +46,5 @@ tflite_convert \
 --output_arrays='TFLite_Detection_PostProcess','TFLite_Detection_PostProcess:1','TFLite_Detection_PostProcess:2','TFLite_Detection_PostProcess:3' \
 --allow_custom_ops
 
+python3 /home/marcelo/Desktop/ECCNNO/Machine_Learning/scripts/updateStatusProject.py $2
+
