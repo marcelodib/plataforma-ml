@@ -5,11 +5,11 @@ Dessa forma, para sua utilização é necessário apenas possuir o dataset do ob
 
 # Funcionalidades
  - Criação de conta.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| ✓ |
- - Autenticação do usuário.    | ✓ |
- - Criação de projeto.         | ✓ |
- - Listagem de projetos.       | ✓ |
- - Upload de datasets.         | ✓ |
- - Download de modelos.        | ✓ |
+ - Autenticação do usuário --->| ✓ |
+ - Criação de projeto -------->| ✓ |
+ - Listagem de projetos ------>| ✓ |
+ - Upload de datasets -------->| ✓ |
+ - Download de modelos ------->| ✓ |
  - Testes via aplicação mobile.|   |
  
  # Andamento do projeto
