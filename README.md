@@ -13,4 +13,4 @@ Dessa forma, para sua utilização é necessário apenas possuir o dataset do ob
  - Testes via aplicação mobile.
  
  # Andamento do projeto
-https://trello.com/c/WsDzdbgI/17-feature-criar-ui-de-cadastro-de-projeto
+https://trello.com/b/W1vBZgwn/plataforma-ml
