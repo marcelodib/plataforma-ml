@@ -137,7 +137,7 @@ module.exports.uploadDataset = async function (app, req, res) {
                 /*Chamada das funçoẽs que realiza a configuração do armazenamento do dataset.*/
                 const storage = multer.diskStorage({
                     destination: function (req, file, callback) {
-                        callback(null, '/home/marcelo/Desktop/ECCNNO/Users/' + req.session.userEmail + '/projects/' + projects[0].idProject);
+                        callback(null, '/home/marcelo/Desktop/plataforma-ml/Users/' + req.session.userEmail + '/projects/' + projects[0].idProject);
                     },
                     filename: function (req, file, callback) {
                         callback(null, 'dataset.zip');

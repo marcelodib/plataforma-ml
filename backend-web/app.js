@@ -8,7 +8,7 @@ const port = process.env.PORT_SERVER; /*Recuperando a porta onde o servidor irá
 
 /*Instanciando o servidor, ouvindo na porta 3000.*/
 app.listen(port, function () {
-	console.log('ECCNNO Server ON!');
+	console.log('plataforma-ml Server ON!');
 });
 /*============================================================================*/
 

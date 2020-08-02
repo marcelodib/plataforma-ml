@@ -1,6 +1,6 @@
 tflite_convert \
---output_file=/home/marcelo/Desktop/ECCNNO/Users/$1/projects/$2/tflite/detect.tflite \
---graph_def_file=/home/marcelo/Desktop/ECCNNO/Users/$1/projects/$2/graph/tflite_graph.pb \
+--output_file=/home/marcelo/Desktop/plataforma-ml/Users/$1/projects/$2/tflite/detect.tflite \
+--graph_def_file=/home/marcelo/Desktop/plataforma-ml/Users/$1/projects/$2/graph/tflite_graph.pb \
 --output_format=TFLITE \
 --input_arrays=normalized_input_image_tensor \
 --input_shapes=1,300,300,3 \

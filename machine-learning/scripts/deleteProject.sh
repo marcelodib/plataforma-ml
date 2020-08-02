@@ -1,0 +1,1 @@
+rm -rf ~/Desktop/plataforma-ml/Users/$1/projects/$2/

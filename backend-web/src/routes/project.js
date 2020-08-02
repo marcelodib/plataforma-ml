@@ -191,7 +191,7 @@ module.exports = function (app) {
             /*Atribuição do path do arquivo passado como parâmetro na requisição.*/
             const idProject   = req.query.idProject;
 
-            const path = "/home/marcelo/Desktop/ECCNNO/Users/" + req.session.userEmail + "/projects/" + idProject + "/tflite/detect.tflite" 
+            const path = "/home/marcelo/Desktop/plataforma-ml/Users/" + req.session.userEmail + "/projects/" + idProject + "/tflite/detect.tflite" 
 
             return res.download(path);
         } 
