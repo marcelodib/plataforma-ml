@@ -15,19 +15,14 @@ module.exports = function (app) {
      * =======================================================================
     */
     app.get('/signIn', function (req, res) {
-        /*Atribuição da função isValid para validação do token.*/
-        const isValid = app.app.controllers.sign.isValid;
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
-        if (req.session.token != undefined && 
-            isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
+        if (req.session.idUser != undefined) {
             /*Renderiza tela de home do usúario.*/
-            res.render("./common/home");
-            return;
+            return res.render("./common/home");
         }
         else{
             /*Renderiza tela de sign in do usúario.*/
-            res.render("./sign/signIn");
-            return;
+            return res.render("./sign/signIn");
         }
     });
 
@@ -39,24 +34,23 @@ module.exports = function (app) {
      * ========================================================================
     */
     app.post('/signIn', 
-        [
-            check('userEmail', 'Email inválido!')   .not().isEmpty().escape().isEmail().isLength({max: 127 }),
-            check('userPassword', 'Senha inválida!').not().isEmpty().isLength({ min: 8, max: 32 })
-        ], function (req, res) {
-                /*Chamada da função que valida os dados da requisição.*/
-                const errors = validationResult(req)
-                /*Verificação se os parâmetros não apresentam inconsistências.*/            
-                if (!errors.isEmpty()) {
-                    /*Envio da respostas.*/
-                    res.send({status: "error", msg: errors.array()});
-                    return;
-                }
-                else {
-                    /*Chamada do controller parar realizar a sign in do usuário e criação de sessão.*/
-                    app.app.controllers.sign.signIn(app, req, res);
-                }
-            }
-        );
+    [
+        check('userEmail'   , 'Email inválido!').not().isEmpty().escape().isEmail().isLength({max: 127 }),
+        check('userPassword', 'Senha inválida!').not().isEmpty().isLength({ min: 8, max: 32 })
+    ], 
+    function (req, res) {
+        /*Chamada da função que valida os dados da requisição.*/
+        const errors = validationResult(req)
+        /*Verificação se os parâmetros não apresentam inconsistências.*/            
+        if (!errors.isEmpty()) {
+            /*Envio da respostas.*/
+            return res.status(400).send({status: "error", msg: errors.array()});
+        }
+        else {
+            /*Chamada do controller parar realizar a sign in do usuário e criação de sessão.*/
+            return app.src.controllers.sign.signIn(app, req, res);
+        }
+    });
 /*============================================================================*/
 
 /*==================================SIGN UP===================================*/
@@ -69,19 +63,14 @@ module.exports = function (app) {
      * =======================================================================
     */
     app.get('/signUp', function (req, res) {
-        /*Atribuição da função isValid para validação do token.*/
-        const isValid = app.app.controllers.sign.isValid;
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
-        if (req.session.token != undefined && 
-            isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
+        if (req.session.idUser != undefined) {
             /*Renderiza tela de home do usúario.*/
-            res.render("./common/home");
-            return;
+            return res.render("./common/home");
         }
         else{
             /*Renderiza tela de sign up do usúario.*/
-            res.render("./sign/signUp");
-            return;
+            return res.render("./sign/signUp");
         }
     });
 
@@ -93,28 +82,25 @@ module.exports = function (app) {
      * =======================================================================
     */
     app.post('/signUp', 
-        [
-            check('userName'    , 'Nome inválido!') .not().isEmpty().escape().isString().isLength({ max: 127 }),
-            check('userEmail'   , 'Email inválido!').not().isEmpty().escape().isEmail().isLength({ max: 127 }),
-            check('userPhone'   , 'Phone inválido!').not().isEmpty().escape().isString().isLength({ min: 13, max: 15 }), 
-            check('userPassword', 'Senha inválida!').not().isEmpty().isLength({ min: 8, max: 31 })
-        ], function (req, res) {
-                /*Atribuição da função isValid, e hasPermission para validação do token.*/
-                const isValid = app.app.controllers.sign.isValid;
-                /*Chamada da função que valida os dados da requisição.*/
-                const errors = validationResult(req)
-                /*Verificação se os parâmetros não apresentam inconsistências.*/            
-                if (!errors.isEmpty()) {
-                    /*Envio da respostas.*/
-                    res.send({status: "error", msg: errors.array()});
-                    return;
-                }
-                else {
-                    /*Chamada do controller parar realizar a inserção do novo usuário.*/
-                    app.app.controllers.sign.signUp(app, req, res);
-                }
-            }
-        );
+    [
+        check('userName'    , 'Nome inválido!' ).not().isEmpty().escape().isString().isLength({ max: 127 }),
+        check('userEmail'   , 'Email inválido!').not().isEmpty().escape().isEmail().isLength({ max: 127 }),
+        check('userPhone'   , 'Phone inválido!').not().isEmpty().escape().isString().isLength({ min: 13, max: 15 }), 
+        check('userPassword', 'Senha inválida!').not().isEmpty().isLength({ min: 8, max: 31 })
+    ], 
+    function (req, res) {
+        /*Chamada da função que valida os dados da requisição.*/
+        const errors = validationResult(req)
+        /*Verificação se os parâmetros não apresentam inconsistências.*/            
+        if (!errors.isEmpty()) {
+            /*Envio da respostas.*/
+            return res.status(400).send({status: "error", msg: errors.array()});
+        }
+        else {
+            /*Chamada do controller parar realizar a inserção do novo usuário.*/
+            return app.src.controllers.sign.signUp(app, req, res);
+        }
+    });
 /*============================================================================*/
 
 /*=================================SIGN OUT===================================*/
@@ -124,8 +110,14 @@ module.exports = function (app) {
      * ========================================================================
     */
     app.get('/signOut', function (req, res) {
-        /*Chamada do controller parar realizar a fechamento da sessão.*/
-        app.app.controllers.sign.signOut(app, req, res);
+        /*Verifica se o usuário possui uma sessão aberta.*/
+        if (req.session.token != undefined) {
+            /*Remoção da sessão.*/
+            return req.session.destroy(res.render('sign/signIn'));
+        }
+        else {
+            return res.render('sign/signIn');
+        }
     });
 /*============================================================================*/
 

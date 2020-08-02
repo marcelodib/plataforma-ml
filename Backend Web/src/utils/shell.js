@@ -27,7 +27,7 @@ module.exports.mkdirProject = function (user, project) {
 /*============================================================================*/
 
 /*===============================DELETE PROJECT===============================*/
-module.exports.deleteProject = function (user, project) {
+module.exports.rmProject = function (user, project) {
     const execSync = require('child_process').execSync;
 
     const { stderr } = execSync('sh ~/Desktop/ECCNNO/Machine_Learning/scripts/deleteProject.sh ' + user + ' ' + project);

@@ -15,33 +15,24 @@ function model(connection) {
 /*==================================SIGN IN===================================*/
 /**
  * ================================================================
- * |Model signIn responsável por autenticar o usuário, verificando|
- * |usuário existe na base, e retornando seus dados para abertura |
- * |da sessão.                                                    |
+ * |Model signIn responsável por enviar uma query para            |
+ * |a base de dados, buscando um determinado usuário.             |
  * ================================================================
  */
-model.prototype.signIn = function (userInfo, callback) {
-    /*Chamada da função que executa a query de busca de dados do usuário requisitado na base de dados.*/
-    this._connection.query('SELECT * FROM user WHERE user.userEmail = \'' + userInfo.userEmail + '\'', callback);
+model.prototype.selectUser = function (userInfo, callback) {
+    return this._connection.select().from("user").where("userEmail", userInfo.userEmail);
 }
 /*============================================================================*/
 
 /*==================================SIGN UP===================================*/
 /**
  * ================================================================
- * |Model signUp responsável por verificar se existe sessão aberta|
- * |para acessar esse model.                                      |
- * |Caso as condições sejam verdadeiras, é enviado uma query para |
+ * |Model signUp responsável por enviar uma query para            |
  * |a base de dados, inserindo um novo usuário.                   |
  * ================================================================
  */
-model.prototype.signUp = function (user, callback) { 
-    /*Chamada da função que executa a query de inserção de um novo usuário na base de dados.*/
-    this._connection.query('INSERT INTO user (userName, UserEmail, userPassword, userPhone) VALUES (' +
-        '\'' + user.userName     + '\', ' +
-        '\'' + user.userEmail    + '\', ' +
-        '\'' + user.userPassword + '\', ' +
-        '\'' + user.userPhone    + '\')', callback);
+model.prototype.insertUser = function (user) { 
+    return this._connection("user").insert([user]);
 }
 /*============================================================================*/
 

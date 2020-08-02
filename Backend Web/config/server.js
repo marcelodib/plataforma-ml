@@ -5,9 +5,12 @@ const morgan = require('morgan');                               /*Módulo respon
 const bodyParser = require('body-parser');                      /*Módulo responsável por fazer a conversão de dados que chegam nas rotas.*/
 const expressSession = require('express-session');              /*Módulo responsável por criar sessões de acesso.*/
 const SQLiteStore = require('connect-sqlite3')(expressSession); /*Módulo responsável por salvar as sessões em arquivo.*/
+const dotenv = require('dotenv');                               /*Modulo responsável por fazer a leitura das variáveis de ambiente.*/
 /*============================================================================*/
 
 /*===============================SERVER CONFIG================================*/
+/*Chamada da função que realiza a leitura das variáveis de ambiente.*/
+dotenv.config();
 
 /*Chamada da função que inicializa o módulo express na variável app.*/
 let app = express();
@@ -49,11 +52,12 @@ app.use(function(req, res, next) {
 
 /*Chamada da função que inclui na aplicação todos os paths dos módulos a serem acessados.*/
 consign()
-	.include('app/routes')          /*Inclusão das rotas.*/
-	.then('config/envConfig.js')    /*Inclusão das variáveis de ambiente.*/
-	.then('config/dbConnection.js') /*Inclusão da conexão com a base de dados.*/
-	.then('app/models')             /*Inclusão dos models.*/
-	.then('app/controllers')        /*Inclusão dos controllers.*/
+	.include('src/routes')          /*Inclusão das rotas.*/
+	.then('src/controllers')        /*Inclusão dos controllers.*/
+	.then('src/services')        /*Inclusão dos controllers.*/
+	.then('src/models')             /*Inclusão dos models.*/
+	.then('src/utils')             /*Inclusão dos models.*/
+	.then('config/database.js') /*Inclusão da conexão com a base de dados.*/
     .into(app);
     
 module.exports = app;

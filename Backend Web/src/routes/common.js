@@ -12,19 +12,14 @@ module.exports = function (app) {
      * =======================================================================
     */
     app.get('/', function (req, res) {
-        /*Atribuição da função isValid para validação do token.*/
-        const isValid = app.app.controllers.sign.isValid;
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
-        if (req.session.token != undefined && 
-            isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
+        if (req.session.idUser != undefined) {
             /*Renderiza tela de home do usúario.*/
-            res.render("./common/home");
-            return;
+            return res.render("./common/home");
         }
         else{
             /*Renderiza tela de index do sistema.*/
-            res.render("./common/index");
-            return;
+            return res.render("./common/index");
         }
     });
 /*============================================================================*/

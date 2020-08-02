@@ -15,19 +15,14 @@ module.exports = function (app) {
      * =======================================================================
     */
     app.get('/createProject', function (req, res) {
-        /*Atribuição da função isValid para validação do token.*/
-        const isValid = app.app.controllers.sign.isValid;
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
-        if (req.session.token != undefined && 
-            isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
+        if (req.session.idUser != undefined) {
             /*Renderiza tela de criação de projeto.*/
-            res.render("./project/createProject");
-            return;
+            return res.render("./project/createProject");
         }
         else{
             /*Redirecionamento para página de sigIn, pois não possui permissão de acesso.*/
-            res.redirect("/signIn");
-            return;
+            return res.redirect("/signIn");
         }
     });
 
@@ -41,35 +36,30 @@ module.exports = function (app) {
      * =======================================================================
     */
     app.post('/createProject', 
-        [
-            check('projectName', 'Nome inválido!')  .not().isEmpty().escape().isString().isLength({ max: 127 }),
-            check('className'  , 'Classe inválido!').not().isEmpty().escape().isString().isLength({ max: 63 }), 
-        ], function (req, res) {
-                /*Atribuição da função isValid para validação do token.*/
-                const isValid = app.app.controllers.sign.isValid;
-                /*Verificação se o usuário possui permissão para acessar essa rota.*/
-                if (req.session.token != undefined && 
-                    isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
-                    /*Chamada da função que valida os dados da requisição.*/
-                    const errors = validationResult(req)
-                    /*Verificação se os parâmetros não apresentam inconsistências.*/            
-                    if (!errors.isEmpty()) {
-                        /*Envio da respostas.*/
-                        res.send({status: "error", msg: errors.array()});
-                        return;
-                    }
-                    else {
-                        /*Chamada do controller parar realizar a inserção do novo projeto.*/
-                        app.app.controllers.project.createProject(app, req, res);
-                    }
-                }
-                else {
-                    /*Envio da respostas.*/
-                    res.send({status: "error", msg: "Acesso Negado!"});
-                    return;
-                }
+    [
+        check('projectName', 'Nome inválido!')  .not().isEmpty().escape().isString().isLength({ max: 127 }),
+        check('className'  , 'Classe inválido!').not().isEmpty().escape().isString().isLength({ max: 63 }), 
+    ], 
+    function (req, res) {
+        /*Verificação se o usuário possui permissão para acessar essa rota.*/
+        if (req.session.idUser != undefined) {
+            /*Chamada da função que valida os dados da requisição.*/
+            const errors = validationResult(req)
+            /*Verificação se os parâmetros não apresentam inconsistências.*/            
+            if (!errors.isEmpty()) {
+                /*Envio da respostas.*/
+                return res.status(400).send({status: "error", msg: errors.array()});
             }
-        );
+            else {
+                /*Chamada do controller parar realizar a inserção do novo projeto.*/
+                return app.src.controllers.project.createProject(app, req, res);
+            }
+        }
+        else {
+            /*Envio da respostas.*/
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
+        }
+    });
 /*============================================================================*/
 
 /*=================================LIST PROJECT===============================*/
@@ -82,19 +72,14 @@ module.exports = function (app) {
      * =======================================================================
     */
     app.get('/listProject', function (req, res) {
-        /*Atribuição da função isValid para validação do token.*/
-        const isValid = app.app.controllers.sign.isValid;
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
-        if (req.session.token != undefined && 
-            isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
+        if (req.session.idUser != undefined) {
             /*Renderiza tela de listagem de projetos.*/
-            res.render("./project/listProject");
-            return;
+            return res.render("./project/listProject");
         }
         else{
             /*Redirecionamento para página de sigIn, pois não possui permissão de acesso.*/
-            res.redirect("/signIn");
-            return;
+            return res.redirect("/signIn");
         }
     });
 
@@ -107,30 +92,28 @@ module.exports = function (app) {
      * |caso contrario, retorna o erro.                                       |
      * ========================================================================
     */
-    app.post('/listProject', [check('idProject', 'Id do projeto inválido').isInt()], 
+    app.post('/listProject', 
+    [
+        check('idProject', 'Id do projeto inválido').isInt()
+    ], 
     function (req, res) {
-        /*Atribuição da função isValid para validação do token.*/
-        const isValid = app.app.controllers.sign.isValid;
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
-        if (req.session.token != undefined && 
-            isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
+        if (req.session.idUser != undefined) {
             /*Chamada da função que valida os dados da requisição.*/
             const errors = validationResult(req)
             /*Verificação se os parâmetros não apresentam inconsistências.*/            
             if (!errors.isEmpty()) {
                 /*Envio da respostas.*/
-                res.send({status: "error", msg: errors.array()});
-                return;
+                return res.status(400).send({status: "error", msg: errors.array()});
             }
             else {
                 /*Chamada do controller parar realizar a busca dos projetos.*/
-                app.app.controllers.project.listProject(app, req, res);
+                return app.src.controllers.project.listProject(app, req, res);
             }
         }
         else {
             /*Envio da respostas.*/
-            res.send({status: "error", msg: "Acesso Negado!"});
-            return;
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/
@@ -144,30 +127,28 @@ module.exports = function (app) {
      * |são validos, e deleta o projeto, caso contrario, retorna o erro.        |
      * ==========================================================================
     */
-    app.post('/deleteProject', [check('idProject', 'Id do Projeto Inválido!').not().isEmpty().escape().isInt()], 
+    app.post('/deleteProject', 
+    [
+        check('idProject', 'Id do Projeto Inválido!').not().isEmpty().escape().isInt()
+    ], 
     function (req, res) {
-        /*Atribuição da função isValid para validação do token.*/
-        const isValid = app.app.controllers.sign.isValid;
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
-        if (req.session.token != undefined && 
-            isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
+        if (req.session.idUser != undefined) {
             /*Chamada da função que valida os dados da requisição.*/
             const errors = validationResult(req)
             /*Verificação se os parâmetros não apresentam inconsistências.*/            
             if (!errors.isEmpty()) {
                 /*Envio da respostas.*/
-                res.send({status: "error", msg: errors.array()});
-                return;
+                return res.status(400).send({status: "error", msg: errors.array()});
             }
             else {
                 /*Chamada do controller para deletar um determinado projeto.*/
-                app.app.controllers.project.deleteProject(app, req, res);
+                return app.src.controllers.project.deleteProject(app, req, res);
             }
         }
         else {
             /*Envio da respostas.*/
-            res.send({status: "error", msg: "Acesso Negado!"});
-            return;
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/
@@ -182,20 +163,14 @@ module.exports = function (app) {
      * =======================================================================
     */
     app.post('/uploadDataset', function(req, res){
-        /*Atribuição da função isValid para validação do token.*/
-        const isValid = app.app.controllers.sign.isValid;
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
-        if (req.session.token != undefined && 
-            isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
-                
+        if (req.session.idUser != undefined) {
             /*Chamada do controller para realizar o upload do dataset de um determinado projeto.*/
-            app.app.controllers.project.uploadDataset(app, req, res);
-            return;
+            return app.src.controllers.project.uploadDataset(app, req, res);
         } 
         else {
             /*Envio da resposta.*/
-            res.send({status: "error", msg: "Acesso Negado!"});
-            return;
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/
@@ -210,24 +185,19 @@ module.exports = function (app) {
      * =======================================================================
     */
     app.get('/downloadModel', function(req, res){
-        /*Atribuição da função isValid para validação do token.*/
-        const isValid = app.app.controllers.sign.isValid;
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
-        if (req.session.token != undefined && 
-            isValid(req.session.userEmail + req.session.userName + req.session.idUser.toString(), req.session.token)) {
+        if (req.session.idUser != undefined) {
             
             /*Atribuição do path do arquivo passado como parâmetro na requisição.*/
             const idProject   = req.query.idProject;
 
             const path = "/home/marcelo/Desktop/ECCNNO/Users/" + req.session.userEmail + "/projects/" + idProject + "/tflite/detect.tflite" 
-            
-            res.download(path);
-            return;
+
+            return res.download(path);
         } 
         else {
             /*Envio da resposta.*/
-            res.send({status: "error", msg: "Acesso Negado!"});
-            return;
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
         }
     });
 /*============================================================================*/
