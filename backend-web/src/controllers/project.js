@@ -55,9 +55,10 @@ module.exports.listProject = async function (app, req, res) {
     try {
         if (req.session.idUser != undefined) {      
         
-            const project = {idProject: req.body.idProject, idUser: req.session.idUser};
+            const idProject = req.body.idProject;
+            const idUser    = req.session.idUser
 
-            const projects = await app.src.services.project.selectProject(app, project);
+            const projects = await app.src.services.project.selectProject(app, idProject, idUser);
 
             /*Envio da respostas*/
 			return res.status(200).send({status: "success", msg: "Projetos encontradas com sucesso!", data: projects});
@@ -86,9 +87,10 @@ module.exports.listProject = async function (app, req, res) {
 module.exports.deleteProject = async function (app, req, res) {
     try {
         if (req.session.idUser != undefined) {  
-            const project =  {idProject: req.body.idProject, idUser: req.session.idUser};
+            const idProject = req.body.idProject;
+            const idUser    = req.session.idUser
 
-            await app.src.services.project.deleteProject(app, project);
+            await app.src.services.project.deleteProject(app, idProject, idUser);
 
             app.src.utils.shell.rmProject(req.session.userEmail, project.idProject);
 
@@ -122,14 +124,15 @@ module.exports.uploadDataset = async function (app, req, res) {
         if (req.session.idUser != undefined) {      
             
             /*Variável que contém o identificador do projeto que receberá o dataset enviado.*/
-            const project =  {idProject: req.query.idProject, idUser: req.session.idUser};
+            const idProject = req.body.idProject;
+            const idUser    = req.session.idUser
 
             /*Verificação do idProject enviado como parâmetro.*/
             if (idProject == undefined || idProject == null || isNaN(idProject) || idProject < 1) {
                 return res.status(400).send({ status: "error", msg: "Identificador do projeto inválido!"});
             }
 
-            const projects = await app.src.services.project.selectProject(app, project);
+            const projects = await app.src.services.project.selectProject(app, idProject, idUser);
 
             /*Verificação se o projeto encontrado condiz com o requisitado.*/
             if (projects.length > 0 && projects[0].idStatus == 1) {
@@ -156,7 +159,7 @@ module.exports.uploadDataset = async function (app, req, res) {
                     app.src.utils.shell.unzip(req.session.userEmail, projects[0].idProject);
 
                     /*Atribuição da função isValid para validação do token.*/
-                    await app.src.services.project.updateStatusProject(app, projects[0]);
+                    await app.src.services.project.updateStatusProject(app, projects[0].idProject, idUser);
 
                     /*Chamada da função que realiza a configuração final e inicia o treinamento.*/
                     app.src.utils.shell.startTrain(req.session.userEmail, projects[0].idProject, projects[0].className);

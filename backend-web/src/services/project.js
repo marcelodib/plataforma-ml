@@ -34,13 +34,13 @@ module.exports.insertProject = async function (app, project) {
  * |projetos requisitadas.                                        |
  * ================================================================
  */
-module.exports.selectProject = async function (app, project) {
+module.exports.selectProject = async function (app, idProject, idUser) {
     /*Abertura de conexão com o banco de dados.*/
     const connection = app.config.database();
     const model = new app.src.models.project(connection);
 
     /*Chamada do model que executa a query de busca de projetos na base de dados*/
-    const result = await model.selectProject(project) 
+    const result = await model.selectProject(idProject, idUser) 
 
         /*Verificação do resultado.*/
     if (result) {
@@ -58,13 +58,13 @@ module.exports.selectProject = async function (app, project) {
  * |projeto requisitado da base de dados.                         |
  * ================================================================
  */
-module.exports.deleteProject = function (app, project) {
+module.exports.deleteProject = function (app, idProject, idUser) {
     /*Abertura de conexão com o banco de dados.*/
     const connection = app.config.database();
     const model = new app.src.models.project(connection);
 
     /*Chamada do model que executa a query de remoção de projetos na base de dados*/
-    const result = await model.deleteProject(project) 
+    const result = await model.deleteProject(idProject, idUser) 
 
         /*Verificação do resultado.*/
     if (result) {
@@ -82,13 +82,13 @@ module.exports.deleteProject = function (app, project) {
  * |atualização do status do projeto requisitado na base de dados.|
  * ================================================================
  */
-module.exports.updateStatusProject = function (app, project) {
+module.exports.updateStatusProject = function (app, idProject, idUser) {
     /*Abertura de conexão com o banco de dados.*/
     const connection = app.config.database();
     const model = new app.src.models.project(connection);
 
     /*Chamada do model que executa a query de atualização de status de projetos na base de dados*/
-    const result = await model.updateStatusProject(project) 
+    const result = await model.updateStatusProject(idProject, idUser) 
 
         /*Verificação do resultado.*/
     if (result) {
