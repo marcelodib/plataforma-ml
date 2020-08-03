@@ -19,11 +19,11 @@ model.prototype.insertProject = function (project) {
  * |a base de dados, buscando os dados dos projetos requisitados. |
  * ================================================================
  */
-model.prototype.listProject = function (idProject, idUser) {
+model.prototype.selectProject = function (idProject, idUser) {
     if (Array.isArray(idProject) && idProject.length > 0) {
-        return this._connection.select().from({p: "project", s: "status"}).whereIn("p.idProject", idProject).andWhere("p.idUser", idUser).andWhere("p.idStatus", "s.idStatus");
+        return this._connection.select().from({p: "project", s: "status"}).whereRaw(`p.idProject = ${idProject}`).whereRaw(`p.idUser = ${idUser}`).whereRaw("p.idStatus = s.idStatus");
     } else {
-        return this._connection.select().from({p: "project", s: "status"}).where("p.idUser", idUser).andWhere("p.idStatus", "s.idStatus");
+        return this._connection.select().from({p: "project", s: "status"}).whereRaw(`p.idUser = ${idUser}`).whereRaw("p.idStatus = s.idStatus");
     }
 }
 /*============================================================================*/
@@ -48,7 +48,7 @@ model.prototype.deleteProject = function (idProject, idUser) {
  * =================================================================
  */
 model.prototype.updateStatusProject = function (idProject, idUser) {
-    return this._connection("project").where("idProject", idProject).andWhere("idUser", idUser).update("status", "status + 1");
+    return this._connection("project").increment("idStatus", 1).where("idProject", idProject).andWhere("idUser", idUser);
 }
 /*============================================================================*/
 

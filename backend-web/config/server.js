@@ -19,7 +19,7 @@ let app = express();
 app.set('view engine', 'ejs');
 
 /*chamada da função que atribui as views da aplicação ao path ./app/views .*/
-app.set('views', './app/views');
+app.set('views', './src/views');
 
 /*Chamada da função que configura a criação de sessões de acesso e
 	as salva em um arquivo local, utilizando o módulo SQLite.*/
@@ -32,7 +32,7 @@ app.use(expressSession({
 }));
 
 /*Chamada da função que atribui o diretório static ao path ./app/public .*/
-app.use(express.static('./app/public'));
+app.use(express.static('./src/public'));
 
 /*Chamada da função que configura a chegada de dados como application/x-www-form-urlencoded.*/
 app.use(bodyParser.urlencoded({limit: '100mb', extended: false }));

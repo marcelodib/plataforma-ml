@@ -21,7 +21,7 @@ module.exports = function (app) {
             return res.render("./project/createProject");
         }
         else{
-            /*Redirecionamento para página de sigIn, pois não possui permissão de acesso.*/
+            /*Redirecionamento para página de sigIn.*/
             return res.redirect("/signIn");
         }
     });
@@ -37,7 +37,7 @@ module.exports = function (app) {
     */
     app.post('/createProject', 
     [
-        check('projectName', 'Nome inválido!')  .not().isEmpty().escape().isString().isLength({ max: 127 }),
+        check('projectName', 'Nome inválido!'  ).not().isEmpty().escape().isString().isLength({ max: 127 }),
         check('className'  , 'Classe inválido!').not().isEmpty().escape().isString().isLength({ max: 63 }), 
     ], 
     function (req, res) {
@@ -78,7 +78,7 @@ module.exports = function (app) {
             return res.render("./project/listProject");
         }
         else{
-            /*Redirecionamento para página de sigIn, pois não possui permissão de acesso.*/
+            /*Redirecionamento para página de sigIn.*/
             return res.redirect("/signIn");
         }
     });
@@ -191,8 +191,10 @@ module.exports = function (app) {
             /*Atribuição do path do arquivo passado como parâmetro na requisição.*/
             const idProject   = req.query.idProject;
 
+            /*Atribuição do caminho do arquivo a ser enviado.*/
             const path = "/home/marcelo/Desktop/plataforma-ml/Users/" + req.session.userEmail + "/projects/" + idProject + "/tflite/detect.tflite" 
 
+            /*Envio da resposta.*/
             return res.download(path);
         } 
         else {

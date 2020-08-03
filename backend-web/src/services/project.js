@@ -58,7 +58,7 @@ module.exports.selectProject = async function (app, idProject, idUser) {
  * |projeto requisitado da base de dados.                         |
  * ================================================================
  */
-module.exports.deleteProject = function (app, idProject, idUser) {
+module.exports.deleteProject = async function (app, idProject, idUser) {
     /*Abertura de conexão com o banco de dados.*/
     const connection = app.config.database();
     const model = new app.src.models.project(connection);
@@ -82,7 +82,7 @@ module.exports.deleteProject = function (app, idProject, idUser) {
  * |atualização do status do projeto requisitado na base de dados.|
  * ================================================================
  */
-module.exports.updateStatusProject = function (app, idProject, idUser) {
+module.exports.updateStatusProject = async function (app, idProject, idUser) {
     /*Abertura de conexão com o banco de dados.*/
     const connection = app.config.database();
     const model = new app.src.models.project(connection);

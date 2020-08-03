@@ -8,7 +8,7 @@ module.exports = function (app) {
      * =======================================================================
      * |Route / responsável por verificar se o usuário possuí sessão aberta. |
      * |Caso as condições sejam verdadeiras, retorna a pagina de home do     |
-     * |usuários, caso contrário, retorna a pagina de index.                 |
+     * |usuário, caso contrário, retorna a pagina de index.                  |
      * =======================================================================
     */
     app.get('/', function (req, res) {

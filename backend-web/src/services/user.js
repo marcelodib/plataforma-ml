@@ -10,7 +10,7 @@
  * |base de dados.                                                  |
  * ==================================================================
  */
-module.exports.selectUser = function (app, userEmail) {
+module.exports.selectUser = async function (app, userEmail) {
 	/*Abertura de conexão com o banco de dados*/
 	const connection = app.config.database();
     const model = new app.src.models.user(connection);
@@ -34,7 +34,7 @@ module.exports.selectUser = function (app, userEmail) {
  * |usuário na base de dados.                                     |
  * ================================================================
  */
-module.exports.insertUser = function (app, user) {
+module.exports.insertUser = async function (app, user) {
     /*Abertura de conexão com o banco de dados*/
 	const connection = app.config.database();
     const model = new app.src.models.user(connection);

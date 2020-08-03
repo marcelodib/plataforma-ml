@@ -18,7 +18,7 @@ module.exports = function (app) {
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
         if (req.session.idUser != undefined) {
             /*Renderiza tela de home do usúario.*/
-            return res.render("./common/home");
+            return res.redirect("/");
         }
         else{
             /*Renderiza tela de sign in do usúario.*/
@@ -66,7 +66,7 @@ module.exports = function (app) {
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
         if (req.session.idUser != undefined) {
             /*Renderiza tela de home do usúario.*/
-            return res.render("./common/home");
+            return res.redirect("/");
         }
         else{
             /*Renderiza tela de sign up do usúario.*/
@@ -111,12 +111,12 @@ module.exports = function (app) {
     */
     app.get('/signOut', function (req, res) {
         /*Verifica se o usuário possui uma sessão aberta.*/
-        if (req.session.token != undefined) {
+        if (req.session.idUser != undefined) {
             /*Remoção da sessão.*/
             return req.session.destroy(res.render('sign/signIn'));
         }
         else {
-            return res.render('sign/signIn');
+            return res.redirect('/signIn');
         }
     });
 /*============================================================================*/

@@ -19,10 +19,8 @@ module.exports.createProject = async function (app, req, res) {
             /*Atribuição dos dados enviados no corpo da requisição.*/
             const project = {...req.body, idUser: req.session.idUser};
 
-            await app.src.services.project.insertProject(app, project);
+            const idProjet = await app.src.services.project.insertProject(app, project);
 
-            const idProjet = result.insertId;
-            
             app.src.utils.shell.mkdirProject(req.session.userEmail, idProjet);
             app.src.utils.configProject.createConfig(req.session.userEmail, idProjet);
             app.src.utils.configProject.createPbtxt(req.session.userEmail, idProjet, project.className);
@@ -92,7 +90,7 @@ module.exports.deleteProject = async function (app, req, res) {
 
             await app.src.services.project.deleteProject(app, idProject, idUser);
 
-            app.src.utils.shell.rmProject(req.session.userEmail, project.idProject);
+            app.src.utils.shell.rmProject(req.session.userEmail, idProject);
 
             /*Envio da respostas*/
 			return res.status(200).send({status: "success", msg: "Projeto removido com sucesso!"});
@@ -124,7 +122,7 @@ module.exports.uploadDataset = async function (app, req, res) {
         if (req.session.idUser != undefined) {      
             
             /*Variável que contém o identificador do projeto que receberá o dataset enviado.*/
-            const idProject = req.body.idProject;
+            const idProject = req.query.idProject;
             const idUser    = req.session.idUser
 
             /*Verificação do idProject enviado como parâmetro.*/
@@ -132,15 +130,15 @@ module.exports.uploadDataset = async function (app, req, res) {
                 return res.status(400).send({ status: "error", msg: "Identificador do projeto inválido!"});
             }
 
-            const projects = await app.src.services.project.selectProject(app, idProject, idUser);
+            const project = await app.src.services.project.selectProject(app, [idProject], idUser);
 
             /*Verificação se o projeto encontrado condiz com o requisitado.*/
-            if (projects.length > 0 && projects[0].idStatus == 1) {
+            if (project.length > 0 && project[0].idStatus == 1) {
 
                 /*Chamada das funçoẽs que realiza a configuração do armazenamento do dataset.*/
                 const storage = multer.diskStorage({
                     destination: function (req, file, callback) {
-                        callback(null, '/home/marcelo/Desktop/plataforma-ml/Users/' + req.session.userEmail + '/projects/' + projects[0].idProject);
+                        callback(null, '/home/marcelo/Desktop/plataforma-ml/Users/' + req.session.userEmail + '/projects/' + project[0].idProject);
                     },
                     filename: function (req, file, callback) {
                         callback(null, 'dataset.zip');
@@ -156,17 +154,18 @@ module.exports.uploadDataset = async function (app, req, res) {
                     }
 
                     /*Chamada da função que realiza o unzip do dataset.*/
-                    app.src.utils.shell.unzip(req.session.userEmail, projects[0].idProject);
+                    app.src.utils.shell.unzip(req.session.userEmail, project[0].idProject);
 
                     /*Atribuição da função isValid para validação do token.*/
-                    await app.src.services.project.updateStatusProject(app, projects[0].idProject, idUser);
+                    await app.src.services.project.updateStatusProject(app, project[0].idProject, idUser);
 
                     /*Chamada da função que realiza a configuração final e inicia o treinamento.*/
-                    app.src.utils.shell.startTrain(req.session.userEmail, projects[0].idProject, projects[0].className);
+                    app.src.utils.shell.startTrain(req.session.userEmail, project[0].idProject, project[0].className);
 
                     return res.status(200).send({status: "success", msg: "Upload realizado com sucesso!\nIniciando Treinamento..."});
                 });
             } else {
+                console.log(projects);
                 return res.status(400).send({status: "error", msg: "O projeto já contém um dataset!"});
             }
         } else {
