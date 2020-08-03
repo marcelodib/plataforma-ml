@@ -18,7 +18,7 @@ module.exports.signIn = async function (app, req, res) {
 		/*Atribuição dos dados enviados na requisição.*/
 		const userInfo = req.body;
 
-		const user = await app.src.services.user.selectUser(app, userInfo);
+		const user = await app.src.services.user.selectUser(app, userInfo.userEmail);
 
 		/*Verificação se o hash da senha enviada confere com a registrada*/
 		if (user.length > 0 && bcrypt.compareSync(userInfo.userPassword, user[0].userPassword)) {
