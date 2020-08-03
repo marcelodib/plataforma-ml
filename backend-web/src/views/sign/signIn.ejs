@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>plataforma-ml</title>
+    <title>Plataforma ML</title>
 
     <link rel="icon" type="image/png" href="images/logo-1.png" />
 
@@ -112,14 +112,14 @@
         })
         .catch((error) => {
             /*Atribuição da mensagem de retorno do servidor.*/
-            let msg = response.data.msg;
+            let msg = error.response.data.msg;
             /*Verificação se foi enviada mais de uma mensagem.*/
             if(Array.isArray(msg)) {
                 /*Atribuição de string vazia a variável.*/
                 msg = "";
                 /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                for (const i in response.data.msg) {
-                    msg += response.data.msg[i].msg + "\n";
+                for (const i in error.response.data.msg) {
+                    msg += error.response.data.msg[i].msg + "\n";
                 }
             } 
             /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/

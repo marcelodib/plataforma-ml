@@ -99,14 +99,14 @@
             })
             .catch((error) => {
                 /*Atribuição da mensagem de retorno do servidor.*/
-                let msg = response.data.msg;
+                let msg = error.response.data.msg;
                 /*Verificação se foi enviada mais de uma mensagem.*/
                 if(Array.isArray(msg)) {
                     /*Atribuição de string vazia a variável.*/
                     msg = "";
                     /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                    for (const i in response.data.msg) {
-                        msg += response.data.msg[i].msg + "\n";
+                    for (const i in error.response.data.msg) {
+                        msg += error.response.data.msg[i].msg + "\n";
                     }
                 } 
                 /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
