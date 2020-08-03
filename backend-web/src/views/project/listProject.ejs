@@ -4,11 +4,14 @@
 <!-- CONTENT -->
 <br><br><br><br>
 <div class="container">
+
     <div class="form-group">
         <input class="form-control col-md-8" type="text" id="searchProject" onkeyup="searchProject()"
             placeholder="Buscar por nome...">
     </div>
+
     <br>
+
     <div class="table-responsive">
         <table class="table" id="projectTable">
             <thead id="tableHeader">
@@ -20,10 +23,10 @@
                 <th>Deletar</th>
             </thead>
             <tbody id="projectList">
-
             </tbody>
         </table>
     </div>
+
 </div>
 
 <!-- Modal -->
@@ -64,7 +67,6 @@
 </div>
 <!-- /CONTENT -->
 
-
 <%include ../common/footer.ejs%>
 
 <script>
@@ -99,10 +101,10 @@
      * =======================================================
      */
     function searchProject() {
-        const input = document.getElementById("searchProject"); /*Variável que contém o elemento de tela de busca na tabela.*/
-        const filter = input.value.toUpperCase();            /*Variável que contém o valor do campo de busca em upper case.*/
-        const table = document.getElementById("projectTable");  /*Variável que contém o elemento de tela da tabela de usuários.*/
-        const tr = table.getElementsByTagName("tr");         /*Variável que contém os elementos de tela com tag <tr>.*/
+        const input  = document.getElementById("searchProject"); /*Variável que contém o elemento de tela de busca na tabela.*/
+        const filter = input.value.toUpperCase();                /*Variável que contém o valor do campo de busca em upper case.*/
+        const table  = document.getElementById("projectTable");  /*Variável que contém o elemento de tela da tabela de usuários.*/
+        const tr     = table.getElementsByTagName("tr");         /*Variável que contém os elementos de tela com tag <tr>.*/
         
         let txtValue; /*Variável que conterá o texto da posição.*/
         let td;       /*Variável que conterá o elemento de tela com tag <td>.*/
@@ -137,15 +139,11 @@
     function listProject() {
         /*Chamada da função que limpa a tabela de projetos.*/
         clearList();
-        /**
-         * Chamada axios para a rota listProject para buscar todos os projetos do usuário.
-         */
+        /*Chamada axios para a rota listProject para buscar todos os projetos do usuário.*/
         axios.post("/listProject", {idProject: 0})
             .then(function (response) {
-                /*Chamada da função que torna o objeto user imutável.*/
-                Object.freeze(response);
                 /* Tratamento do retorno.*/
-                if (response.data.status == "success") {
+                if (response.status === 200 && response.data.status === "success") {
                     /*Variável que contém os projetos retornados pelo servidor.*/
                     const projects = response.data.data;
 
@@ -156,28 +154,23 @@
                     projects.forEach(element => {
                         list.innerHTML += templateListProject(element);
                     });
-                } else {
-                    /*Atribuição da mensagem de retorno do servidor.*/
-                    let msg = response.data.msg;
-                    /*Verificação se foi enviada mais de uma mensagem.*/
-                    if(Array.isArray(response.data.msg)) {
-                        /*Atribuição de string vazia a variável.*/
-                        msg = "";
-                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                        for (const i in response.data.msg) {
-                            msg += response.data.msg[i].msg;
-                            msg += "\n";
-                        }
-                    } 
-                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
-                    alert(msg);
                 }
             })
             .catch(function (error) {
-                /*Tratamento de erro.*/
-                alert("ERROR");
-                console.log(error);
-            });
+                /*Atribuição da mensagem de retorno do servidor.*/
+                let msg = response.data.msg;
+                /*Verificação se foi enviada mais de uma mensagem.*/
+                if(Array.isArray(msg)) {
+                    /*Atribuição de string vazia a variável.*/
+                    msg = "";
+                    /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                    for (const i in response.data.msg) {
+                        msg += response.data.msg[i].msg + "\n";
+                    }
+                } 
+                /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                return alert(msg);
+        });
     }
 /*============================================================================*/
 
@@ -190,9 +183,7 @@
      */
     function deleteProject(idProject) {
         if(confirm("Você gostaria mesmo de deletar esse projeto?")) {
-            /**
-             * Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.
-             */
+            /*Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.*/
             axios.post("/deleteProject", {idProject: idProject})
                 .then(function (response) {
                     /*Chamada da função que torna o objeto user imutável.*/
@@ -202,27 +193,22 @@
                         alert(response.data.msg);
                         /*Reload da lista de projetos*/
                         listProject();
-                    } else {
-                        /*Atribuição da mensagem de retorno do servidor.*/
-                        let msg = response.data.msg;
-                        /*Verificação se foi enviada mais de uma mensagem.*/
-                        if(Array.isArray(response.data.msg)) {
-                            /*Atribuição de string vazia a variável.*/
-                            msg = "";
-                            /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                            for (const i in response.data.msg) {
-                                msg += response.data.msg[i].msg;
-                                msg += "\n";
-                            }
-                        } 
-                        /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
-                        alert(msg);
                     }
                 })
                 .catch(function (error) {
-                    /*Tratamento de erro.*/
-                    alert("ERROR");
-                    console.log(error);
+                    /*Atribuição da mensagem de retorno do servidor.*/
+                    let msg = response.data.msg;
+                    /*Verificação se foi enviada mais de uma mensagem.*/
+                    if(Array.isArray(msg)) {
+                        /*Atribuição de string vazia a variável.*/
+                        msg = "";
+                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                        for (const i in response.data.msg) {
+                            msg += response.data.msg[i].msg + "\n";
+                        }
+                    } 
+                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                    return alert(msg);
                 });
         }        
     }
@@ -238,18 +224,16 @@
     function uploadDataset() {
         /*Verificação se foi feito o upload do dataset corretamente.*/
         if (document.getElementById("dataset").files[0] == undefined) {
-            alert("É necessário selecionar um dataset compactado em .zip!");
-            return;
+            return alert("É necessário selecionar um dataset compactado em .zip!");
         }
 
         /*Verificação se foi selecionado um projeto corretamente.*/
-        if(idProjectSelected < 1) {
-            alert("É necessário selecionar um projeto!");
-            return;
+        if(isNaN(idProjectSelected) || idProjectSelected < 1) {
+            return alert("É necessário selecionar um projeto!");
         }
 
         /*Atribuição do arquivo importado.*/
-        let dataset = new FormData();
+        const dataset = new FormData();
         dataset.append("dataset", document.getElementById("dataset").files[0]);
 
         /*Chamada axios reponsável por chamar a rota uploadDataset para fazer o envio do arquivo importado pelo usuário.*/
@@ -257,27 +241,32 @@
             method: 'post',
             url: '/uploadDataset?idProject=' + idProjectSelected,
             data: dataset,
-            header: {
-                'Content-Type': 'multipart/form-data',
-            },
+            header: {'Content-Type': 'multipart/form-data'},
         })
-            .then((response) => {
-                /*Tratamento do retorno.*/
-                if (response.data.status == "success") {
-                    $('#exampleModalCenter').modal('hide');
-                    alert(response.data.msg);
-                    /*Reload da lista de projetos.*/
-                    listProject();
-                } else {
-                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor.*/
-                    alert(response.data.msg);
+        .then((response) => {
+            /*Tratamento do retorno.*/
+            if (response.status === 200 && response.data.status === "success") {
+                $('#exampleModalCenter').modal('hide');
+                alert(response.data.msg);
+                /*Reload da lista de projetos.*/
+                listProject();
+            }
+        })
+        .catch((error) => {
+            /*Atribuição da mensagem de retorno do servidor.*/
+            let msg = response.data.msg;
+            /*Verificação se foi enviada mais de uma mensagem.*/
+            if(Array.isArray(msg)) {
+                /*Atribuição de string vazia a variável.*/
+                msg = "";
+                /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                for (const i in response.data.msg) {
+                    msg += response.data.msg[i].msg + "\n";
                 }
-            })
-            .catch((error) => {
-                /*Tratamento de erro*/
-                alert("ERROR" + error);
-                console.log(error);
-            });
+            } 
+            /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+            return alert(msg);
+        });
     }
 /*============================================================================*/
 
@@ -289,8 +278,6 @@
      * =======================================================
      */
     function downloadModel(idProject) {
-        /*Chamada da função que torna o objeto user imutável.*/
-        Object.freeze(idProject);
         window.open("/downloadModel?idProject=" + idProject, "_blank");
     }
 /*============================================================================*/

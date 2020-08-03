@@ -75,15 +75,13 @@
         Object.freeze(project);
 
         /*Verificação do nome do projeto.*/
-        if(project.projectName == null || project.projectName == undefined || project.projectName == "" || project.projectName.length > 127) {
-            alert("Nome do Projeto inválido!");
-            return;
+        if(project.projectName == undefined || project.projectName == null || project.projectName == "" || project.projectName.length > 127) {
+            return alert("Nome do Projeto inválido!");
         }
 
         /*Verificação da classe(label) do projeto.*/
-        if(project.className == null || project.className == undefined || project.className == "" || project.className.length > 63) {
-            alert("Nome do Objeto inválido!");
-            return;
+        if(project.className == undefined || project.className == null || project.className == "" || project.className.length > 63) {
+            return alert("Nome do Objeto inválido!");
         }
         
         /**
@@ -91,36 +89,28 @@
          */
         axios.post("/createProject", project)
             .then((response) => {
-                /*Chamada da função que torna o objeto user imutável.*/
-                Object.freeze(response);
                 /* Tratamento do retorno.*/
-                if (response.data.status == "success") {
+                if (response.status === 200 && response.data.status === "success") {
                     /*Alerta o usuário com a mensagem do servidor.*/
                     alert(response.data.msg);
                     /*Redireciona para página de listagem de projetos*/
                     window.location.href = "/listProject";
                 }
-                else{
-                    /*Atribuição da mensagem de retorno do servidor.*/
-                    let msg = response.data.msg;
-                    /*Verificação se foi enviada mais de uma mensagem.*/
-                    if(Array.isArray(response.data.msg)) {
-                        /*Atribuição de string vazia a variável.*/
-                        msg = "";
-                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
-                        for (const i in response.data.msg) {
-                            msg += response.data.msg[i].msg;
-                            msg += "\n";
-                        }
-                    } 
-                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
-                    alert(msg);
-                }
             })
             .catch((error) => {
-                /*Tratamento de erro.*/
-                alert("ERROR");
-                console.log(error);
+                /*Atribuição da mensagem de retorno do servidor.*/
+                let msg = response.data.msg;
+                /*Verificação se foi enviada mais de uma mensagem.*/
+                if(Array.isArray(msg)) {
+                    /*Atribuição de string vazia a variável.*/
+                    msg = "";
+                    /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                    for (const i in response.data.msg) {
+                        msg += response.data.msg[i].msg + "\n";
+                    }
+                } 
+                /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                return alert(msg);
             });
     }
 /*============================================================================*/
