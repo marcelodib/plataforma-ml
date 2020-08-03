@@ -1,13 +1,13 @@
 -- ============================================================== --
 -- ====================Criação da base de dados================== --
 -- ============================================================== --
-CREATE DATABASE IF NOT EXISTS eccnno;
-USE eccnno;
+CREATE DATABASE IF NOT EXISTS platformML;
+USE platformML;
 
 -- ============================================================== --
 -- =================Criação da tabela de usuarios================ --
 -- ============================================================== --
-CREATE TABLE user (
+CREATE TABLE IF NOT EXISTS user (
     idUser            INT AUTO_INCREMENT PRIMARY KEY,
     userEmail         VARCHAR(128) NOT NULL UNIQUE,
     userName          VARCHAR(128) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE user (
 -- ============================================================== --
 -- =================Criação da tabela de status================ --
 -- ============================================================== --
-CREATE TABLE status (
+CREATE TABLE IF NOT EXISTS status (
     idStatus    INT AUTO_INCREMENT PRIMARY KEY,
     statusName  VARCHAR(64) NOT NULL UNIQUE
 );
@@ -27,7 +27,7 @@ CREATE TABLE status (
 -- ============================================================== --
 -- =================Criação da tabela de projetos================ --
 -- ============================================================== --
-CREATE TABLE project (
+CREATE TABLE IF NOT EXISTS project (
     idProject   INT AUTO_INCREMENT PRIMARY KEY,
     idUser      INT          NOT NULL,
     idStatus    INT          NOT NULL DEFAULT 1,
