@@ -46,5 +46,8 @@ tflite_convert \
 --output_arrays='TFLite_Detection_PostProcess','TFLite_Detection_PostProcess:1','TFLite_Detection_PostProcess:2','TFLite_Detection_PostProcess:3' \
 --allow_custom_ops
 
+file="/home/marcelo/Desktop/plataforma-ml/Users/$1/projects/$2/tflite/detect.txt"
+echo "$3" > $file
+
 python3 /home/marcelo/Desktop/plataforma-ml/machine-learning/scripts/updateStatusProject.py $2
 
