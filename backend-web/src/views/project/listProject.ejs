@@ -24,7 +24,7 @@
                 <th>Status</th>
                 <th>Deletar</th>
             </thead>
-            <tbody id="projectList">
+            <tbody class="text-secondary" id="projectList">
             </tbody>
         </table>
     </div>
@@ -67,6 +67,39 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-secondary" id="exampleModalLongTitle">Baixando Modelo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:downloadModel()" method="POST">
+
+                    <div class="form-group">
+                        <label class="text-secondary"><i class="fas fa-cubes"></i> Formato</label>
+                        <br>
+                        <select class="form-control single" style="width: 100%;" name="downloadFormat"
+                            id="downloadFormat" multiple="multiple" required>
+                            <option value="model">Bruto</option>
+                            <option value="pb">Desktop</option>
+                            <option value="tflite">Mobile</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" style="background-color: #e18451; border-color: #e18451;">Baixar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- /CONTENT -->
 
 <%include ../common/footer.ejs%>
@@ -82,7 +115,7 @@
      */
     window.onload = () => {
         /*Chamada da função que adiciona o titulo da side bar.*/
-        setSideBarTitle("Listar Projetos", "fa-list")
+        setSideBarTitle("Meus Projetos", "fa-clipboard-list")
         listProject();
     };
     $(document).ready(function () {
@@ -91,6 +124,10 @@
             $('#sidebar').toggleClass('active');
         });
 
+        /*Chamada da função que ativa os dropdowns.*/
+        $('.single').select2({
+            maximumSelectionLength: 1
+        });
     });
 /*============================================================================*/
 
@@ -279,8 +316,14 @@
      * |modelo treinado do projeto requisitado.              |
      * =======================================================
      */
-    function downloadModel(idProject) {
-        window.open("/downloadModel?idProject=" + idProject, "_blank");
+    function downloadModel() {
+        const format = document.getElementById("downloadFormat").value;
+
+        if (format === undefined || format === null || format === "") {
+            return alert("Nenhum projeto foi selecionado!");
+        }
+
+        window.open(`/downloadModel?idProject=${idProjectSelected}&format=${format}`, "_blank");
     }
 /*============================================================================*/
 
@@ -329,7 +372,7 @@
         }
         /*Verificação do status do projeto para permitir o botão de download.*/
         if(project.idStatus == 3) {
-            downloadButton = `<i class="btn fas fa-download btn-primary" onClick="downloadModel(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;"></i>`
+            downloadButton = `<i class="btn fas fa-download btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;"  data-toggle="modal" data-target="#exampleModalCenter1"></i>`
         }
         return `
             <td>
