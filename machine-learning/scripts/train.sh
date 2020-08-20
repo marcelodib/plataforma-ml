@@ -49,5 +49,11 @@ tflite_convert \
 file="/home/marcelo/Desktop/plataforma-ml/Users/$1/projects/$2/tflite/detect.txt"
 echo "$3" > $file
 
+cd ~/Desktop/plataforma-ml/Users/$1/projects/$2
+
+zip -r $2-tflite.zip tflite/
+zip -r $2-model.zip model/
+zip -r $2-pb.zip graph/
+
 python3 /home/marcelo/Desktop/plataforma-ml/machine-learning/scripts/updateStatusProject.py $2
 
