@@ -1,9 +1,9 @@
 const items = [
-    {route: "/createProject", icon: "fa-plus", title: "Criar Projeto"},
-    {route: "/listProject", icon: "fa-list", title: "Listar Projeto"},
+    {route: "/createProject", icon: "fa-plus", title: "Novo Projeto"},
+    {route: "/listProject", icon: "fa-clipboard-list", title: "Meus Projeto"},
     {route: "/updatePassword", icon: "fa-key", title: "Mudar Senha"},
     {route: "/signOut", icon: "fa-sign-out-alt", title: "Sign Out"}
-]
+];
 /*============================================================================*/
 /**
  * =======================================================
@@ -17,7 +17,7 @@ function setSideBarTitle(title, icon) {
     sideBarTitle.innerHTML = `
         <h4><i class="fas ${icon} fa-1x"></i> ${title}</h4>
         <hr>`;
-    
+
     setSideBarItems();
     return;
 }
