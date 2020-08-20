@@ -181,5 +181,52 @@ module.exports.uploadDataset = async function (app, req, res) {
 }
 /*============================================================================*/
 
+/*===============================DOWNLOAD MODEL===============================*/
+/**
+ * ================================================================
+ * |Controller downloadModel responsável por verificar se existe  |
+ * |sessão aberta para acessar esse controller.                   |
+ * |Caso as condições sejam verdadeiras, é verificado os dados    |
+ * |enviados e realizado o envio do modelo requisitado.           |
+ * ================================================================
+ */
+module.exports.downloadModel = async function (app, req, res) {
+    try {
+        if (req.session.idUser != undefined) {  
+            /*Atribuição do dados para formar path do arquivo requirido.*/
+            const idProject = req.query.idProject;
+            const format    = req.query.format;
+
+            let path = ""
+
+            if (format === "model") {
+                /*Atribuição do caminho do arquivo a ser enviado.*/
+                path = `/home/marcelo/Desktop/plataforma-ml/Users/${req.session.userEmail}/projects/${idProject}/${idProject}-model.zip`; 
+            }
+
+            if (format === "pb") {
+                /*Atribuição do caminho do arquivo a ser enviado.*/
+                path = `/home/marcelo/Desktop/plataforma-ml/Users/${req.session.userEmail}/projects/${idProject}/${idProject}-pb.zip`; 
+            }
+
+            if (format === "tflite") {
+                /*Atribuição do caminho do arquivo a ser enviado.*/
+                path = `/home/marcelo/Desktop/plataforma-ml/Users/${req.session.userEmail}/projects/${idProject}/${idProject}-tflite.zip`; 
+            }
+            /*Envio da resposta.*/
+            return res.download(path);
+        } else {
+            /*Envio da respostas*/
+            return res.status(401).send({status: "error", msg: "Acesso Negado!"});
+        }
+    } catch (error) {
+        /*Chamada do tratador de erros.*/
+		app.src.utils.error.errorHandler.errorHandler(error, "downloadModel");
+		/*Envio da resposta.*/
+		return res.status(500).send({status: "error", msg: "Ocorreu um erro ao enviar o modelo!"});
+    }
+}
+/*============================================================================*/
+
 /*============================================================================*/
 

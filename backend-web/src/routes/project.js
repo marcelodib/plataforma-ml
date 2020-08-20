@@ -180,7 +180,7 @@ module.exports = function (app) {
      * =======================================================================
      * |Route downloadModel responsável por verificar se o usuário possuí    |
      * |sessão aberta.                                                       |
-     * |Caso as condições sejam verdadeiras, retorna o model requisitado     |
+     * |Caso as condições sejam verdadeiras, retorna o modelo requisitado     |
      * |pelo usuário.                                                        |
      * =======================================================================
     */
@@ -188,14 +188,23 @@ module.exports = function (app) {
         /*Verificação se o usuário possui permissão para acessar essa rota.*/
         if (req.session.idUser != undefined) {
             
-            /*Atribuição do path do arquivo passado como parâmetro na requisição.*/
-            const idProject   = req.query.idProject;
+            /*Atribuição do dados para formar path do arquivo requirido.*/
+            const idProject = req.query.idProject;
+            const format    = req.query.format;
 
-            /*Atribuição do caminho do arquivo a ser enviado.*/
-            const path = "/home/marcelo/Desktop/plataforma-ml/Users/" + req.session.userEmail + "/projects/" + idProject + "/tflite/detect.tflite" 
+            /*Verificação se o identificador do projeto é válido.*/
+            if (isNaN(idProject) || idProject <= 0) {
+                /*Envio da resposta.*/
+                return res.status(400).send({status: "error", msg: "Identificador do projeto inválido!"});
+            }
 
-            /*Envio da resposta.*/
-            return res.download(path);
+            /*Verificação se o formato do modelo é válido.*/
+            if (format !== "model" && format !== "pb" && format !== "tflite") {
+                /*Envio da resposta.*/
+                return res.status(400).send({status: "error", msg: "Formato do modelo inválido!"});
+            }
+
+            app.src.controllers.project.downloadModel(app, req, res);
         } 
         else {
             /*Envio da resposta.*/
