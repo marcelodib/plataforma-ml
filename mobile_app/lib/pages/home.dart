@@ -11,9 +11,9 @@ import 'package:archive/archive.dart';
 
 import 'dart:math' as math;
 
-import 'camera.dart';
-import 'bndbox.dart';
-import 'models.dart';
+import '../widgets/camera.dart';
+import '../widgets/bndbox.dart';
+import '../utils/models.dart';
 
 class HomePage extends StatefulWidget {
   final List<CameraDescription> cameras;
