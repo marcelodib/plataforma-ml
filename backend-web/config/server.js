@@ -35,7 +35,7 @@ app.use(expressSession({
 app.use(express.static('./src/public'));
 
 /*Chamada da função que configura a chegada de dados como application/x-www-form-urlencoded.*/
-app.use(bodyParser.urlencoded({limit: '100mb', extended: false }));
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true }));
 
 /*Chamada da função que configura a chegada de dados como application/json.*/
 app.use(bodyParser.json({limit: '100mb'}));
