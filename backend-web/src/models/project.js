@@ -20,7 +20,7 @@ model.prototype.insertProject = function (project) {
  * ================================================================
  */
 model.prototype.selectProject = function (idProject, idUser) {
-    if (Array.isArray(idProject) && idProject.length > 0) {
+    if (!isNaN(idProject) && idProject > 0) {
         return this._connection.select().from({p: "project", s: "status"}).whereRaw(`p.idProject = ${idProject}`).whereRaw(`p.idUser = ${idUser}`).whereRaw("p.idStatus = s.idStatus");
     } else {
         return this._connection.select().from({p: "project", s: "status"}).whereRaw(`p.idUser = ${idUser}`).whereRaw("p.idStatus = s.idStatus");
