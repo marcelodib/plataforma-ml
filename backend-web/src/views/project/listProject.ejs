@@ -9,7 +9,7 @@
         <input class="form-control col-md-7" type="text" id="searchProject" onkeyup="searchProject()"
             placeholder="Buscar por nome...">
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="/createProject" class="btn btn-primary form-control col-md-4" style="background-color: #e18451; border-color: #e18451;">Criar Projeto</a>
+        <a href="/createProject" class="btn btn-primary form-control col-md-4" style="background-color: #f5851f; border-color: #f5851f;">Criar Projeto</a>
     </div>
 
     <br>
@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="uploadDataset();" style="background-color: #e18451; border-color: #e18451;">Enviar</button>
+                <button type="button" class="btn btn-primary" onclick="uploadDataset();" style="background-color: #f5851f; border-color: #f5851f;">Enviar</button>
             </div>
         </div>
     </div>
@@ -93,7 +93,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" style="background-color: #e18451; border-color: #e18451;">Baixar</button>
+                        <button type="submit" class="btn btn-primary" style="background-color: #f5851f; border-color: #f5851f;">Baixar</button>
                     </div>
                 </form>
             </div>
@@ -368,11 +368,11 @@
 
         /*Verificação do status do projeto para permitir o botão de upload.*/
         if(project.idStatus == 1) {
-            uploadButton = `<i class="btn fas fa-upload btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;" data-toggle="modal" data-target="#exampleModalCenter"></i>`
+            uploadButton = `<i class="btn fas fa-upload btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #f5851f; border-color: #f5851f;" data-toggle="modal" data-target="#exampleModalCenter"></i>`
         }
         /*Verificação do status do projeto para permitir o botão de download.*/
         if(project.idStatus == 3) {
-            downloadButton = `<i class="btn fas fa-download btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #e18451; border-color: #e18451;"  data-toggle="modal" data-target="#exampleModalCenter1"></i>`
+            downloadButton = `<i class="btn fas fa-download btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #f5851f; border-color: #f5851f;"  data-toggle="modal" data-target="#exampleModalCenter1"></i>`
         }
         return `
             <td>

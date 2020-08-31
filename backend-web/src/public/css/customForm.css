@@ -13,7 +13,7 @@
 
 form h1 {
   font-size: 18px;
-  background: #e18451 none repeat scroll 0% 0%;
+  background: #f5851f none repeat scroll 0% 0%;
   color: rgb(255, 255, 255);
   padding: 22px 25px;
   border-radius: 5px 5px 0px 0px;
@@ -81,7 +81,7 @@ a {
 }
 
 .btn-contact {
-  background-color: #e18451;
+  background-color: #f5851f;
   color: #FFF;
   text-align: center;
   width: 100%;
@@ -107,8 +107,8 @@ a {
 
 .btnLeft{
   float:right;
-  background-color: #e18451; 
-  border-color: #e18451;
+  background-color: #f5851f; 
+  border-color: #f5851f;
 }
 
 #mainNav .navbar-nav .nav-item:hover {
