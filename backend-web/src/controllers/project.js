@@ -1,5 +1,6 @@
 /*===============================IMPORT MODULES===============================*/
 const multer = require('multer');
+const {rootPath} = require('../utils/shell');
 /*============================================================================*/
 
 /*============================PROJECT CONTROLLERS=============================*/
@@ -201,17 +202,17 @@ module.exports.downloadModel = async function (app, req, res) {
 
             if (format === "model") {
                 /*Atribuição do caminho do arquivo a ser enviado.*/
-                path = `/home/marcelo/Desktop/plataforma-ml/Users/${req.session.userEmail}/projects/${idProject}/${idProject}-model.zip`; 
+                path = `${rootPath}plataforma-ml/Users/${req.session.userEmail}/projects/${idProject}/${idProject}-model.zip`; 
             }
 
             if (format === "pb") {
                 /*Atribuição do caminho do arquivo a ser enviado.*/
-                path = `/home/marcelo/Desktop/plataforma-ml/Users/${req.session.userEmail}/projects/${idProject}/${idProject}-pb.zip`; 
+                path = `${rootPath}plataforma-ml/Users/${req.session.userEmail}/projects/${idProject}/${idProject}-pb.zip`; 
             }
 
             if (format === "tflite") {
                 /*Atribuição do caminho do arquivo a ser enviado.*/
-                path = `/home/marcelo/Desktop/plataforma-ml/Users/${req.session.userEmail}/projects/${idProject}/${idProject}-tflite.zip`; 
+                path = `${rootPath}plataforma-ml/Users/${req.session.userEmail}/projects/${idProject}/${idProject}-tflite.zip`; 
             }
             /*Envio da resposta.*/
             return res.download(path);

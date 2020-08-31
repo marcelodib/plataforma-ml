@@ -1,10 +1,11 @@
 /*===============================IMPORT MODULES===============================*/
 const fs = require('fs');
+const {rootPath} = require('./shell');
 /*============================================================================*/
 
 /*===============================CREATE CONFIG================================*/
 module.exports.createConfig = function (user, project) {
-    const path = "/home/marcelo/Desktop/plataforma-ml/Users/" + user + "/projects/" + project + "/config/trainConfig.config";
+    const path = `${rootPath}plataforma-ml/Users/${user}/projects/${project}/config/trainConfig.config`;
     const content = trainConfigContent(user, project)
     fs.writeFileSync(path, content);
 }
@@ -12,7 +13,7 @@ module.exports.createConfig = function (user, project) {
 
 /*================================CREATE PBTXT================================*/
 module.exports.createPbtxt = function (user, project, obj) {
-    const path = "/home/marcelo/Desktop/plataforma-ml/Users/" + user + "/projects/" + project + "/config/object-detection.pbtxt";
+    const path = `${rootPath}plataforma-ml/Users/${user}/projects/${project}/config/object-detection.pbtxt`;
     const content = pbtxtContent(obj)
     fs.writeFileSync(path, content);
 }
@@ -206,9 +207,9 @@ data_augmentation_options {
 
 train_input_reader: {
 tf_record_input_reader {
-    input_path: "/home/marcelo/Desktop/plataforma-ml/Users/${user}/projects/${project}/config/train.record"
+    input_path: "${rootPath}plataforma-ml/Users/${user}/projects/${project}/config/train.record"
 }
-label_map_path: "/home/marcelo/Desktop/plataforma-ml/Users/${user}/projects/${project}/config/object-detection.pbtxt"
+label_map_path: "${rootPath}plataforma-ml/Users/${user}/projects/${project}/config/object-detection.pbtxt"
 }
 
 eval_config: {
@@ -220,9 +221,9 @@ max_evals: 10
 
 eval_input_reader: {
 tf_record_input_reader {
-    input_path: "/home/marcelo/Desktop/plataforma-ml/Users/${user}/projects/${project}/config/test.record"
+    input_path: "${rootPath}plataforma-ml/Users/${user}/projects/${project}/config/test.record"
 }
-label_map_path: "/home/marcelo/Desktop/plataforma-ml/Users/${user}/projects/${project}/config/object-detection.pbtxt"
+label_map_path: "${rootPath}plataforma-ml/Users/${user}/projects/${project}/config/object-detection.pbtxt"
 shuffle: false
 num_readers: 1
 }
