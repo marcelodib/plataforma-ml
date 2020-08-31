@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:plataforma_ml/pages/login.dart';
-import 'pages/home.dart';
 
 List<CameraDescription> cameras;
 
@@ -21,10 +20,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Plataforma ML',
-      // theme: ThemeData(
-      //   brightness: Brightness.dark,
-      // ),
-      // home: HomePage(cameras),
       home: LoginPage(),
     );
   }
