@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plataforma_ml/utils/colors.dart';
 
 class CustomCard extends StatefulWidget {
   final String title;
@@ -59,11 +60,12 @@ class _CustomCardState extends State<CustomCard> {
       alignment: FractionalOffset.centerLeft,
       child: CircleAvatar(
         radius: 35.0,
-        child: Image(
-          image: AssetImage('logo-white.png'),
-          height: 40,
+        child: Icon(
+          Icons.bubble_chart,
+          color: Colors.white,
+          size: 50,
         ),
-        backgroundColor: Color(0xFFf5851f),
+        backgroundColor: primaryOrange,
       ),
     );
   }
