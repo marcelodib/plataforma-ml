@@ -1,14 +1,70 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:plataforma_ml/api/project.dart';
+import 'package:plataforma_ml/pages/testProject.dart';
 import 'package:plataforma_ml/utils/colors.dart';
+import 'package:plataforma_ml/widgets/circularProgress.dart';
 
 class ProjectPage extends StatefulWidget {
+  int idProject;
+  String projectName;
+  String label;
+
+  ProjectPage(this.idProject, this.projectName, this.label);
+
   @override
   _ProjectPageState createState() => _ProjectPageState();
 }
 
 class _ProjectPageState extends State<ProjectPage> {
+  @override
+  initState() {
+    super.initState();
+    downloadProject(widget.idProject, "tflite").then((value) => {print(value)});
+  }
+
+  List<Widget> content(int progress, String status) {
+    return [
+      Text(
+        "Acurácia",
+        style: TextStyle(
+          color: Colors.grey[400],
+          fontSize: 31,
+          fontWeight: FontWeight.w300,
+        ),
+      ),
+      SizedBox(height: 11),
+      RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: "$progress",
+              style: TextStyle(
+                color: Colors.orange,
+                fontSize: 61,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextSpan(
+              text: "%",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 31,
+              ),
+            ),
+          ],
+        ),
+      ),
+      SizedBox(height: 11),
+      Text(
+        "$status",
+        style: TextStyle(
+          color: Colors.orange,
+        ),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,46 +119,59 @@ class _ProjectPageState extends State<ProjectPage> {
               ),
             ],
           ),
-          Align(
-            heightFactor: 1.5,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                CircularProgress(),
-                SizedBox(
-                  height: 21,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(height: MediaQuery.of(context).size.height / 12),
+              Center(
+                child: Text(
+                  "${widget.projectName}",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700),
                 ),
-                Instructions(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 1.2,
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [secondaryOrange, primaryOrange],
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(50))),
-                        child: Center(
-                          child: Text(
-                            'Testar'.toUpperCase(),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height / 35),
+              CircularProgress(61, content(61, "Razoável")),
+              SizedBox(
+                height: 21,
+              ),
+              ProjectDetails(widget.projectName, widget.label),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  TestProject(widget.idProject)));
+                    },
+                    child: Container(
+                      height: 45,
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [secondaryOrange, primaryOrange],
                           ),
+                          borderRadius: BorderRadius.all(Radius.circular(50))),
+                      child: Center(
+                        child: Text(
+                          'Testar'.toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
-                    )
-                  ],
-                )
-              ],
-            ),
+                    ),
+                  )
+                ],
+              )
+            ],
           ),
         ],
       ),
@@ -110,128 +179,12 @@ class _ProjectPageState extends State<ProjectPage> {
   }
 }
 
-class CircularProgress extends StatelessWidget {
-  final int progress = 61;
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              width: 151,
-              height: 151,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black38,
-                    offset: Offset(0, 1),
-                    blurRadius: 9.0,
-                  ),
-                ],
-              ),
-              padding: EdgeInsets.all(11.0),
-              child: CustomPaint(
-                foregroundPainter: new MyPainter(
-                  completeColor: Colors.deepOrangeAccent,
-                  completePercent: progress.toDouble(),
-                  width: 9.0,
-                ),
-                child: Center(
-                  child: Container(
-                    margin: EdgeInsets.all(17),
-                    child: FittedBox(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "Acurácia",
-                            style: TextStyle(
-                              color: Colors.grey[400],
-                              fontSize: 31,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          SizedBox(height: 11),
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: "$progress",
-                                  style: TextStyle(
-                                    color: Colors.orange,
-                                    fontSize: 61,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "%",
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 31,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 11),
-                          Text(
-                            "Perfect",
-                            style: TextStyle(
-                              color: Colors.orange,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
+class ProjectDetails extends StatelessWidget {
+  String projectName;
+  String label;
 
-class MyPainter extends CustomPainter {
-  Color lineColor;
-  Color completeColor;
-  double completePercent;
-  double width;
-  MyPainter({
-    this.lineColor,
-    this.completeColor,
-    this.completePercent,
-    this.width,
-  });
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint complete = new Paint()
-      ..color = completeColor
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = width;
-    Offset center = new Offset(size.width / 2, size.height / 2);
-    double radius = min(size.width / 2, size.height / 2);
-    double arcAngle = 2 * pi * (completePercent / 100);
-    canvas.drawArc(new Rect.fromCircle(center: center, radius: radius), pi / 2,
-        arcAngle, false, complete);
-  }
+  ProjectDetails(this.projectName, this.label);
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
-}
-
-class Instructions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -261,12 +214,12 @@ class Instructions extends StatelessWidget {
                 child: Column(
                   children: [
                     ListTile(
-                      title: Text("Nome: Projeto 1"),
+                      title: Text("Nome: $projectName"),
                       leading:
                           Icon(Icons.bubble_chart, color: Colors.grey.shade700),
                     ),
                     ListTile(
-                      title: Text("Objeto: Placa"),
+                      title: Text("Objeto: $label"),
                       leading: Icon(Icons.label, color: Colors.grey.shade700),
                     ),
                     ListTile(
