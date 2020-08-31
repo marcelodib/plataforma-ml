@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:plataforma_ml/api/auth.dart';
+import 'package:plataforma_ml/api/project.dart';
 import 'package:plataforma_ml/pages/listProjects.dart';
 import 'package:plataforma_ml/utils/colors.dart';
 
@@ -11,6 +13,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
   // f45d27
   // f5851f
 
@@ -20,152 +24,162 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
+  login() async {
+    if (await signIn(email.text, password.text)) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => ListProjectsPage()),
+          (route) => false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       backgroundColor: primaryOrange,
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 2.5,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [secondaryOrange, primaryOrange],
+      body: Stack(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              Flexible(
+                flex: 2,
+                child: Container(
+                  height: double.infinity,
+                  padding: EdgeInsets.all(15.0),
+                  alignment: Alignment.topLeft,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [secondaryOrange, primaryOrange],
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[],
+                  ),
                 ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Spacer(),
-                  Align(
-                      alignment: Alignment.center,
-                      child: Image(
-                        image: AssetImage('logo-white.png'),
-                        width: 200,
-                        height: 200,
-                      )),
-                  Spacer(),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 32, right: 32),
-                      child: Image(
-                        image: AssetImage('text-white.png'),
-                        width: 200,
-                        height: 90,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height / 2,
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 62),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+              Flexible(
+                flex: 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(35),
-                      topRight: Radius.circular(35))),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    width: MediaQuery.of(context).size.width / 1.2,
-                    height: 45,
-                    padding:
-                        EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 4),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(color: Colors.black12, blurRadius: 5)
-                        ]),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        icon: Icon(
-                          Icons.email,
-                          color: Colors.grey,
-                        ),
-                        hintText: 'Email',
-                      ),
+                      topRight: Radius.circular(35),
                     ),
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width / 1.2,
-                    height: 45,
-                    margin: EdgeInsets.only(top: 32),
-                    padding:
-                        EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 4),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(color: Colors.black12, blurRadius: 5)
-                        ]),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        icon: Icon(
-                          Icons.vpn_key,
-                          color: Colors.grey,
-                        ),
-                        hintText: 'Senha',
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 16, right: 32),
-                      child: Text(
-                        'Modo Offline',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                  ),
-                  Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ListProjectsPage()),
-                          (route) => false);
-                    },
-                    child: Container(
-                      height: 45,
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [secondaryOrange, primaryOrange],
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(50))),
-                      child: Center(
-                        child: Text(
-                          'Entrar'.toUpperCase(),
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
+                ),
               ),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height / 10,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.white,
-            )
-          ],
-        ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Center(
+                child: Image(
+                  image: AssetImage('logo-white-full-v.png'),
+                  width: 300,
+                  height: 300,
+                ),
+              ),
+              SizedBox(
+                height: 21,
+              ),
+              Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 1.2,
+                  height: 45,
+                  padding:
+                      EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 4),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 5)
+                      ]),
+                  child: TextField(
+                    controller: email,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      icon: Icon(
+                        Icons.email,
+                        color: Colors.grey,
+                      ),
+                      hintText: 'Email',
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 1.2,
+                  height: 45,
+                  margin: EdgeInsets.only(top: 32),
+                  padding:
+                      EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 4),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 5)
+                      ]),
+                  child: TextField(
+                    controller: password,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      icon: Icon(
+                        Icons.vpn_key,
+                        color: Colors.grey,
+                      ),
+                      hintText: 'Senha',
+                    ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16, right: 32),
+                  child: Text(
+                    'Modo Offline',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              ),
+              Spacer(),
+              GestureDetector(
+                onTap: () {
+                  login();
+                },
+                child: Center(
+                  child: Container(
+                    height: 45,
+                    width: MediaQuery.of(context).size.width / 1.2,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [secondaryOrange, primaryOrange],
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
+                    child: Center(
+                      child: Text(
+                        'Entrar'.toUpperCase(),
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 100,
+              )
+            ],
+          ),
+        ],
       ),
     );
   }
