@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:plataforma_ml/utils/colors.dart';
+
 class BndBox extends StatelessWidget {
   final List<dynamic> results;
   final int previewH;
@@ -51,14 +53,14 @@ class BndBox extends StatelessWidget {
             padding: EdgeInsets.only(top: 5.0, left: 5.0),
             decoration: BoxDecoration(
               border: Border.all(
-                color: Color.fromRGBO(37, 213, 253, 1.0),
+                color: primaryOrange,
                 width: 3.0,
               ),
             ),
             child: Text(
               "${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}%",
               style: TextStyle(
-                color: Color.fromRGBO(37, 213, 253, 1.0),
+                color: primaryOrange,
                 fontSize: 14.0,
                 fontWeight: FontWeight.bold,
               ),
