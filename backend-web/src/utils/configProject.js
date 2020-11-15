@@ -194,7 +194,7 @@ fine_tune_checkpoint_type:  "detection"
 # empirically found to be sufficient enough to train the pets dataset. This
 # effectively bypasses the learning rate schedule (the learning rate will
 # never decay). Remove the below line to train indefinitely.
-num_steps: 100
+num_steps: 25000
 data_augmentation_options {
     random_horizontal_flip {
     }
