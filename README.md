@@ -12,7 +12,7 @@ Dessa forma, para sua utilização é necessário apenas possuir o dataset do ob
 | Listagem de projetos | ✓ |
 | Upload de datasets | ✓ |
 | Download de modelos | ✓ |
-| Testes via aplicação mobile | dev |
+| Testes via aplicação mobile | ✓ |
 
  
  ### Andamento do projeto
