@@ -149,12 +149,12 @@ $ cd backend-web
 $ touch .env
 $ nano .env
 ```
-PORT_SERVER=3000
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=SEU_USUARIO
-DB_PASSWORD=SUA_SENHA
-DB_NAME=platformML
+PORT_SERVER=3000 \
+DB_HOST=localhost \
+DB_PORT=3306 \
+DB_USER=SEU_USUARIO \
+DB_PASSWORD=SUA_SENHA \
+DB_NAME=platformML \
 
 ### Execução
 
