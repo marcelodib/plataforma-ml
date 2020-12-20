@@ -147,12 +147,19 @@ $ mysql --user="SEU_USUARIO" --database="platformML" -p < "database/database.sql
 ```sh
 $ cd backend-web
 $ touch .env
+$ nano .env
 ```
+PORT_SERVER=3000
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=SEU_USUARIO
+DB_PASSWORD=SUA_SENHA
+DB_NAME=platformML
 
 ### Execução
 
 #### Backend
-Após executar o comando abaixo a aplicação web estará disponível em http://localhost:3000
+Após executar os comandos abaixo a aplicação web estará disponível em http://localhost:3000
 ```sh
 $ cd backend-web
 $ node install
