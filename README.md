@@ -113,7 +113,11 @@ $ python3 setup.py sdist
 $ (cd slim && python setup.py sdist)
 ```
 
+#### Instalando FLUTTER
+https://flutter.dev/docs/get-started/install/linux
+
 #### Instalando NODE JS
+https://nodejs.org/en/download/
 ```sh
 $ sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
 $ curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
@@ -122,6 +126,7 @@ $ sudo apt -y  install gcc g++ make
 ```
 
 #### Instalando MYSQL
+https://dev.mysql.com/downloads/mysql/
 ```sh
 $ sudo apt install mysql-server
 $ sudo mysql_secure_installation
@@ -150,10 +155,12 @@ $ touch .env
 Após executar o comando abaixo a aplicação web estará disponível em http://localhost:3000
 ```sh
 $ cd backend-web
+$ node install
 $ node app
 ```
 
 #### Mobile App
 ```sh
+$ cd mobile_app
 $ flutter run
 ```
