@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Plataforma ML</title>
+
+    <link rel="icon" type="image/png" href="images/logo-orange.png" />
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    
+    <!-- Font Awesome JS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+    <!-- SELECT2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="css/home.css">
+
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <script defer src="js/axios/axios.min.js"></script>
+    <script defer src="js/common/sideBar.js"></script>
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div id="sidebar-title" class="sidebar-header">
+            </div>
+
+            <ul id="sidebar-menu" class="list-unstyled components">
+            </ul>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- NAVBAR -->
+            <nav id="border1" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn">
+                        <i class="fas fa-bars" id="navtoggle"></i>
+                    </button>
+
+                    <a href="/" class="navbar-brand"><img src="/images/logo-orange-full-h.png" style="min-height: 100%; min-width: 250%;"></a>
+
+                    <ul id="border2" class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="/signOut" id="logout" class="btn btn-primary" style="background-color: #f5851f; border-color: #f5851f;">Sign Out</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- /NAVBAR -->

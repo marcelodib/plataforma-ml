@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Plataforma ML</title>
+
+    <link rel="icon" type="image/png" href="images/logo-orange.png" />
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+    <!-- Font Awesome JS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+    <!-- SELECT2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <script defer src="js/axios/axios.min.js"></script>
+
+</head>
+
+<body>
+
+    <div id="content">
+        <!-- NAVBAR -->
+        <nav id="border1" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+            <div class="container-fluid">
+
+                <a href="/" class="navbar-brand"><img src="/images/logo-orange-full-h.png" style="min-height: 100%; min-width: 250%;"></a>
+
+                <ul id="border2" class="nav navbar-nav ml-auto">
+                </ul>
+            </div>
+        </nav>
+        <!-- /NAVBAR -->
+
+        <!-- CONTENT -->
+        <br>
+        <br>
+        <br>
+        <br>
+        <form id="formLogin" action="javascript:signIn()" method="post">
+
+                <h1>Preencha os campos abaixo para logar.</h1>
+    
+                <div class="contentform">
+                    <div class="center">
+                        <div class="form-group">
+                            <p>Email<span>*</span></p>
+                            <span class="icon-case"><i class="fa fa-user center-icon"></i></span>
+                            <input type="email" id="userEmail" name="userEmail" value="" maxlength="127" required>
+                        </div>
+                        <div class="form-group">
+                            <p>Senha<span>*</span></p>
+                            <span class="icon-case"><i class="fa fa-key center-icon"></i></span>
+                            <input type="password" id="userPassword" name="userPassword" maxlength="32" required>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn-contact">Entrar</button>
+        </form>
+        <!-- /CONTENT -->
+    
+<%include ../common/footer.ejs%>
+
+<script>
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por recuperar os dados do usuário,|
+     * |fazer uma pré validação e enviar para o servidor     |
+     * |realizar a autenticação.                             |
+     * =======================================================
+     */
+    function signIn() {
+        /*Atribuição dos dados do usuário.*/
+        const user = {
+            userEmail:    document.getElementById("userEmail").value,
+            userPassword: document.getElementById("userPassword").value,
+        }
+
+        /*Chamada da função que torna o objeto user imutável.*/
+        Object.freeze(user);
+        
+        /*Verificação se a senha possui o minímo de caracteres.*/
+        if(user.userEmail == undefined || user.userEmail == null || user.userEmail == "" ||user.userEmail.length > 127) {
+            return alert("Email incorreto!");
+        }
+        
+        /*Verificação se a senha possui o minímo de caracteres.*/
+        if(user.userPassword == undefined || user.userPassword == null || user.userPassword == "" || user.userPassword.length < 8 || user.userPassword.length > 32) {
+            return alert("Senha incorreta!");
+        }
+
+        axios.post("/signIn", user)
+        .then((response) => {
+            /*Tratamento do retorno.*/
+            if (response.status === 200 && response.data.status === "success") {
+                /*Redirecionamento para home do sistema.*/
+                window.location.href = "/"
+            }
+        })
+        .catch((error) => {
+            /*Atribuição da mensagem de retorno do servidor.*/
+            let msg = error.response.data.msg;
+            /*Verificação se foi enviada mais de uma mensagem.*/
+            if(Array.isArray(msg)) {
+                /*Atribuição de string vazia a variável.*/
+                msg = "";
+                /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                for (const i in error.response.data.msg) {
+                    msg += error.response.data.msg[i].msg + "\n";
+                }
+            } 
+            /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+            return alert(msg);
+        });
+    }
+/*============================================================================*/
+</script>
+
+</html>

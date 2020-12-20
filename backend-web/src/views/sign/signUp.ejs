@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Plataforma ML</title>
+
+    <link rel="icon" type="image/png" href="images/logo-orange.png" />
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+    <!-- Font Awesome JS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+    <!-- SELECT2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <link rel="stylesheet" type="text/css" href="css/customForm.css">
+
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <script defer src="js/axios/axios.min.js"></script>
+
+</head>
+
+<body>
+
+    <div id="content">
+        <!-- NAVBAR -->
+        <nav id="border1" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+            <div class="container-fluid">
+
+                <a href="/" class="navbar-brand"><img src="/images/logo-orange-full-h.png" style="min-height: 100%; min-width: 250%;"></a>
+
+                <ul id="border2" class="nav navbar-nav ml-auto">
+                </ul>
+            </div>
+        </nav>
+
+        <!-- CONTENT -->
+        <div class="container">
+
+            <br><br>
+
+            <div class="divCenter">
+                <h3>Cadastrando Novo Usuário &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+                <br>
+                <form action="javascript:signUp()" method="POST">
+
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Nome Completo</label>
+                        <input type="text" pattern="[A-Za-zÀ-ú ']{1,127}$" name="userName" id="userName" class="form-control" minlength="1" maxlength="127" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-at"></i> Email</label>
+                        <input type="email" name="userEmail" id="userEmail" class="form-control" minlength="1" maxlength="127" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Telefone</label>
+                        <input type="tel" placeholder="(99)9999-9999" name="userPhone" id="userPhone" class="form-control"
+                            pattern="\({1}[0-9]{2}\){1} {0,1}[0-9]{4,5}-{1}[0-9]{4}$" minlength="13" maxlength="15" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-key"></i> Senha</label>
+                        <input type="password" name="password" id="password" class="form-control" minlength="8" maxlength="31" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-key"></i> Confirmar Senha</label>
+                        <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" minlength="8" maxlength="31" required>
+                    </div>
+
+                    <button class="btn btn-primary btnLeft" type="submit">Salvar</button>
+                </form>
+            </div>
+
+            <br>
+            <br>
+        </div>
+        <!-- /CONTENT -->
+
+<%include ../common/footer.ejs%>
+
+<script>
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável executar todas as rotinas iniciais|
+     * |da página assim que ela é carregada.                 |
+     * =======================================================
+     */
+    window.onload = () => {};
+    $(document).ready(function () {
+        /*Chamada da função que ativa a side bar.*/
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por tratar os dados do formulário e|
+     * |realizar o envio dos dados para o servidor cadastrar  |
+     * |um novo usuário.                                      |
+     * ========================================================
+     */
+    function signUp() {
+        const password        = document.getElementById("password").value;        /*Variável que contém a senha do usuário.*/
+        const confirmPassword = document.getElementById("confirmPassword").value; /*Variável que contém a confirmação de senha do usuário.*/
+
+        const user = {
+            userName    : document.getElementById("userName") .value, /*Atributo que contém o nome completo do usuário.*/
+            userEmail   : document.getElementById("userEmail").value, /*Atributo que contém o email do usuário.*/
+            userPhone   : document.getElementById("userPhone").value, /*Atributo que contém o celular do usuário.*/
+            userPassword: "",                                         /*Atributo que conterá a senha do usuário.*/
+        }
+
+        /*Verificação do nome completo do usuário.*/
+        if(user.userName == undefined || user.userName == null || user.userName == "" || user.userName.length > 127) {
+            return alert("Nome do usuário inválido!");
+        }
+
+        /*Verificação do email do usuário.*/
+        if(user.userEmail == undefined || user.userEmail == null || user.userEmail == "" || user.userEmail.length > 127) {
+            return alert("Email do usuário inválido!");
+        }
+
+        /*Verificação do celular do usuário.*/
+        if(user.userPhone == undefined || user.userPhone == null || user.userPhone == "" || user.userPhone.length > 15 || user.userEmail.length < 13) {
+            return alert("Celular do usuário inválido!");
+        }
+
+        /*Verificação da senha do usuário.*/
+        if(password == undefined || password == null || password == "" || password.length > 32 || password.length < 8) {
+            return alert("Senha do usuário inválido!");
+        }
+
+        /*Verificação da confirmção da senha do usuário.*/
+        if(confirmPassword == undefined || confirmPassword == null || confirmPassword == "" || confirmPassword.length > 32 || confirmPassword.length < 8) {
+            return alert("Confirmação da senha do usuário inválido!");
+        }
+
+        /*Verificação se as senhas do usuário conferem.*/
+        if(password != confirmPassword) {
+            return alert("Senha e Confirmação de senha estão diferentes!");
+        } else {
+            user.userPassword = password;
+        }
+
+        /*Chamada da função que torna o objeto user imutável.*/
+		Object.freeze(user);
+
+        /*Chamada axios para a rota signUp para inserir um novo usuário no sistema.*/
+        axios.post("/signUp", user)
+        .then((response) => {
+            /* Tratamento do retorno.*/
+            if (response.status === 200 && response.data.status === "success") {
+                /*Alerta o usuário com a mensagem do servidor.*/
+                alert(response.data.msg);
+                /*Redirecionamento para tela de signIn.*/
+                window.location.href = "/signIn"
+            }
+        })
+        .catch((error) => {
+            /*Atribuição da mensagem de retorno do servidor.*/
+            let msg = error.response.data.msg;
+            /*Verificação se foi enviada mais de uma mensagem.*/
+            if(Array.isArray(msg)) {
+                /*Atribuição de string vazia a variável.*/
+                msg = "";
+                /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                for (const i in error.response.data.msg) {
+                    msg += error.response.data.msg[i].msg + "\n";
+                }
+            } 
+            /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+            return alert(msg);
+        });
+    }
+/*============================================================================*/
+</script>
+
+</html>

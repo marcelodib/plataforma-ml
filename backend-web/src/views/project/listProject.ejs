@@ -1,0 +1,396 @@
+<%include ../common/header.ejs%>
+<link rel="stylesheet" type="text/css" href="css/dragAndDrop.css">
+
+<!-- CONTENT -->
+<br><br><br><br>
+<div class="container">
+
+    <div class="form-group row">
+        <input class="form-control col-md-7" type="text" id="searchProject" onkeyup="searchProject()"
+            placeholder="Buscar por nome...">
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="/createProject" class="btn btn-primary form-control col-md-4" style="background-color: #f5851f; border-color: #f5851f;">Criar Projeto</a>
+    </div>
+
+    <br>
+
+    <div class="table-responsive">
+        <table class="table" id="projectTable">
+            <thead id="tableHeader">
+                <th>Upload</th>
+                <th>Download</th>
+                <th>Nome</th>
+                <th>Objeto</th>
+                <th>Status</th>
+                <th>Deletar</th>
+            </thead>
+            <tbody class="text-secondary" id="projectList">
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-secondary" id="exampleModalLongTitle">Importando Dataset</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="item-inner">
+                    <div class="item-content">
+                        <div class="file-upload"> 
+                            <label style="cursor: pointer;" for="file_upload"> <img src="" alt="" class="uploaded-file">
+                                <div class="h-100">
+                                    <div class="dplay-tbl">
+                                        <div class="dplay-tbl-cell"> <i class="fa fa-cloud-upload"></i>
+                                            <h5><b>Selecione um arquivo .zip</b></h5>
+                                            <h6><i class="fas fa-cloud-upload-alt"></i></h6>
+                                            <h6 class="mt-10 mb-70">clique aqui</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input data-required="file" type="file" name="dataset" id="dataset" class="file-input" accept=".zip" value="" >
+                            </label> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="uploadDataset();" style="background-color: #f5851f; border-color: #f5851f;">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-secondary" id="exampleModalLongTitle">Baixando Modelo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:downloadModel()" method="POST">
+
+                    <div class="form-group">
+                        <label class="text-secondary"><i class="fas fa-cubes"></i> Formato</label>
+                        <br>
+                        <select class="form-control single" style="width: 100%;" name="downloadFormat"
+                            id="downloadFormat" multiple="multiple" required>
+                            <option value="model">Bruto</option>
+                            <option value="pb">Desktop</option>
+                            <option value="tflite">Mobile</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" style="background-color: #f5851f; border-color: #f5851f;">Baixar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /CONTENT -->
+
+<%include ../common/footer.ejs%>
+
+<script>
+    let idProjectSelected = 0;
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável executar todas as rotinas iniciais|
+     * |da página assim que ela é carregada.                 |
+     * =======================================================
+     */
+    window.onload = () => {
+        /*Chamada da função que adiciona o titulo da side bar.*/
+        setSideBarTitle("Meus Projetos", "fa-clipboard-list")
+        listProject();
+    };
+    $(document).ready(function () {
+        /*Chamada da função que ativa a side bar.*/
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+
+        /*Chamada da função que ativa os dropdowns.*/
+        $('.single').select2({
+            maximumSelectionLength: 1
+        });
+    });
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável realizar o filtro de busca na     |
+     * |tabela de projetos, utilizando o campo nome como     |
+     * |referência.                                          |
+     * =======================================================
+     */
+    function searchProject() {
+        const input  = document.getElementById("searchProject"); /*Variável que contém o elemento de tela de busca na tabela.*/
+        const filter = input.value.toUpperCase();                /*Variável que contém o valor do campo de busca em upper case.*/
+        const table  = document.getElementById("projectTable");  /*Variável que contém o elemento de tela da tabela de usuários.*/
+        const tr     = table.getElementsByTagName("tr");         /*Variável que contém os elementos de tela com tag <tr>.*/
+        
+        let txtValue; /*Variável que conterá o texto da posição.*/
+        let td;       /*Variável que conterá o elemento de tela com tag <td>.*/
+        
+        /*Loop responsável por percorrer todas as linhas da tabela procurando pelo valor buscado.*/
+        for (let i = 0; i < tr.length; i++) {
+            /*Atribuição do terceiro item da linha.*/
+            td = tr[i].getElementsByTagName("td")[2];
+            if(td) {
+                /*Atribuição do conteúdo da posição.*/
+                txtValue = td.textContent || td.innerText;
+                /*Verificação se o valor buscado está contido no item.*/
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    /*Torna a linha visível.*/
+                    tr[i].style.display = "";
+                } else {
+                    /*Torna a linha invisível.*/
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por buscar todos os projectos do   |
+     * |usuário disponíveis no servidor para serem listados.  |
+     * ========================================================
+     */
+    function listProject() {
+        /*Chamada da função que limpa a tabela de projetos.*/
+        clearList();
+        /*Chamada axios para a rota listProject para buscar todos os projetos do usuário.*/
+        axios.post("/listProject", {idProject: 0})
+            .then(function (response) {
+                /* Tratamento do retorno.*/
+                if (response.status === 200 && response.data.status === "success") {
+                    /*Variável que contém os projetos retornados pelo servidor.*/
+                    const projects = response.data.data;
+
+                    /*Variável de manipulação do elemento projectList.*/
+                    const list = document.getElementById("projectList");
+
+                    /*Loop responsável por renderizar cada porjeto na tabela.*/
+                    projects.forEach(element => {
+                        list.innerHTML += templateListProject(element);
+                    });
+                }
+            })
+            .catch(function (error) {
+                /*Atribuição da mensagem de retorno do servidor.*/
+                let msg = error.response.data.msg;
+                /*Verificação se foi enviada mais de uma mensagem.*/
+                if(Array.isArray(msg)) {
+                    /*Atribuição de string vazia a variável.*/
+                    msg = "";
+                    /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                    for (const i in error.response.data.msg) {
+                        msg += error.response.data.msg[i].msg + "\n";
+                    }
+                } 
+                /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                return alert(msg);
+        });
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * ========================================================
+     * |Função responsável por enviar ao servidor um pedido de|
+     * |remoção de um determinado projeto do usuário.         |
+     * ========================================================
+     */
+    function deleteProject(idProject) {
+        if(confirm("Você gostaria mesmo de deletar esse projeto?")) {
+            /*Chamada axios para a rota deleteProject para remover um determinado projeto do usuário.*/
+            axios.post("/deleteProject", {idProject: idProject})
+                .then(function (response) {
+                    /*Chamada da função que torna o objeto user imutável.*/
+                    Object.freeze(response);
+                    /* Tratamento do retorno.*/
+                    if (response.data.status == "success") {
+                        alert(response.data.msg);
+                        /*Reload da lista de projetos*/
+                        listProject();
+                    }
+                })
+                .catch(function (error) {
+                    /*Atribuição da mensagem de retorno do servidor.*/
+                    let msg = error.response.data.msg;
+                    /*Verificação se foi enviada mais de uma mensagem.*/
+                    if(Array.isArray(msg)) {
+                        /*Atribuição de string vazia a variável.*/
+                        msg = "";
+                        /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                        for (const i in error.response.data.msg) {
+                            msg += error.response.data.msg[i].msg + "\n";
+                        }
+                    } 
+                    /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+                    return alert(msg);
+                });
+        }        
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por realizar o upload do dataset  |
+     * |importado pelo usuário.                              |
+     * =======================================================
+     */
+    function uploadDataset() {
+        /*Verificação se foi feito o upload do dataset corretamente.*/
+        if (document.getElementById("dataset").files[0] == undefined) {
+            return alert("É necessário selecionar um dataset compactado em .zip!");
+        }
+
+        /*Verificação se foi selecionado um projeto corretamente.*/
+        if(isNaN(idProjectSelected) || idProjectSelected < 1) {
+            return alert("É necessário selecionar um projeto!");
+        }
+
+        /*Atribuição do arquivo importado.*/
+        const dataset = new FormData();
+        dataset.append("dataset", document.getElementById("dataset").files[0]);
+
+        /*Chamada axios reponsável por chamar a rota uploadDataset para fazer o envio do arquivo importado pelo usuário.*/
+        axios({
+            method: 'post',
+            url: '/uploadDataset?idProject=' + idProjectSelected,
+            data: dataset,
+            header: {'Content-Type': 'multipart/form-data'},
+        })
+        .then((response) => {
+            /*Tratamento do retorno.*/
+            if (response.status === 200 && response.data.status === "success") {
+                $('#exampleModalCenter').modal('hide');
+                alert(response.data.msg);
+                /*Reload da lista de projetos.*/
+                listProject();
+            }
+        })
+        .catch((error) => {
+            /*Atribuição da mensagem de retorno do servidor.*/
+            let msg = error.response.data.msg;
+            /*Verificação se foi enviada mais de uma mensagem.*/
+            if(Array.isArray(msg)) {
+                /*Atribuição de string vazia a variável.*/
+                msg = "";
+                /*Loop responsável por concatenar todas as mensagens enviadas.*/
+                for (const i in error.response.data.msg) {
+                    msg += error.response.data.msg[i].msg + "\n";
+                }
+            } 
+            /*Alertar o usuario, caso tenha ocorrido algum erro no servidor*/
+            return alert(msg);
+        });
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por chamar a rota de download do  |
+     * |modelo treinado do projeto requisitado.              |
+     * =======================================================
+     */
+    function downloadModel() {
+        const format = document.getElementById("downloadFormat").value;
+
+        if (format === undefined || format === null || format === "") {
+            return alert("Nenhum projeto foi selecionado!");
+        }
+
+        window.open(`/downloadModel?idProject=${idProjectSelected}&format=${format}`, "_blank");
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por salvar o id do projeto        |
+     * |selecionado pelo usuário, para realizar o upload do  |
+     * |dataset.                                             |
+     * =======================================================
+     */
+    function setIdProject(idProject) {
+        /*Atribuição do id do projeto selecionado na variável de controle*/
+        idProjectSelected = idProject;
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por limpar os itens na tabela de  |
+     * |projetos.                                            | 
+     * =======================================================
+     */
+    function clearList() {
+        /*Limpeza dos elementos da tabela projectList.*/
+        document.getElementById("projectList").innerHTML = "";
+    }
+/*============================================================================*/
+
+/*============================================================================*/
+    /**
+     * =======================================================
+     * |Função responsável por retornar um template html de  |
+     * |um determinado item da tabela, correspondente a um   |
+     * |projeto.                                             |
+     * =======================================================
+     */
+    function templateListProject(project) {
+        let uploadButton = `<i class="btn fas fa-upload btn-secondary"></i>`;
+        let downloadButton = `<i class="btn fas fa-download btn-secondary"></i>`;
+
+        /*Verificação do status do projeto para permitir o botão de upload.*/
+        if(project.idStatus == 1) {
+            uploadButton = `<i class="btn fas fa-upload btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #f5851f; border-color: #f5851f;" data-toggle="modal" data-target="#exampleModalCenter"></i>`
+        }
+        /*Verificação do status do projeto para permitir o botão de download.*/
+        if(project.idStatus == 3) {
+            downloadButton = `<i class="btn fas fa-download btn-primary" onClick="setIdProject(\'${project.idProject}\');" style="background-color: #f5851f; border-color: #f5851f;"  data-toggle="modal" data-target="#exampleModalCenter1"></i>`
+        }
+        return `
+            <td>
+                ${uploadButton}
+            </td>
+            <td>
+                ${downloadButton}
+            </td>
+            <td>${project.projectName}</td>
+            <td>${project.className}</td>
+            <td>${project.statusName}</td>
+            <td>
+                <i class="btn fas fa-trash btn-danger" onClick="deleteProject(\'${project.idProject}\');"></i>
+            </td>
+        `;
+    }
+/*============================================================================*/
+
+</script>
+
+</html>

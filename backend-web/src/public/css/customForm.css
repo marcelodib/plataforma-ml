@@ -1,0 +1,118 @@
+.info p {
+  text-align: center;
+  color: #999;
+  text-transform: none;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 2px
+}
+
+.center-icon {
+  padding: 10px 5px
+}
+
+form h1 {
+  font-size: 18px;
+  background: #f5851f none repeat scroll 0% 0%;
+  color: rgb(255, 255, 255);
+  padding: 22px 25px;
+  border-radius: 5px 5px 0px 0px;
+  margin: auto;
+  text-shadow: none;
+  text-align: center;
+}
+
+p span {
+  color: #F00;
+}
+
+p {
+  margin: 0px;
+  font-weight: 500;
+  line-height: 2;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  color: #666;
+  text-shadow: 1px 1px 0px #FFF;
+  margin: 50px 0px 0px 0px
+}
+
+h3 {
+  text-align: center;
+  color: #666;
+  text-shadow: 1px 1px 0px #FFF;
+  margin: 50px 0px 0px 0px
+}
+
+input {
+  border-radius: 0px 5px 5px 0px;
+  border: 1px solid #eee ;
+  width: 75%;
+  float: left;
+  padding: 0px 15px;
+}
+
+a {
+  text-decoration: inherit
+}
+
+.form-group {
+  overflow: hidden;
+  clear: both;
+  color: #777;
+}
+
+.icon-case {
+  width: 35px;
+  float: left;
+  border-radius: 5px 0px 0px 5px;
+  background: #eeeeee;
+  height: 40px;
+  position: relative;
+  text-align: center;
+  line-height: 40px;
+}
+
+.contentform {
+  padding: 40px 30px;
+}
+
+.btn-contact {
+  background-color: #f5851f;
+  color: #FFF;
+  text-align: center;
+  width: 100%;
+  border: 0;
+  padding: 17px 25px;
+  border-radius: 0px 0px 5px 5px;
+  cursor: pointer;
+  margin-top: 40px;
+  font-size: 18px;
+}
+
+.center {
+  width: 100%;
+  float: center;
+  box-sizing: border-box;
+  padding-left: 15%;
+}
+
+.divCenterForm{
+  margin: 0 auto !important;
+  width: 50%;
+}
+
+.btnLeft{
+  float:right;
+  background-color: #f5851f; 
+  border-color: #f5851f;
+}
+
+#mainNav .navbar-nav .nav-item:hover {
+    color: fade(rgba(1, 139, 211), 80%);
+    outline: none;
+    background-color: transparent;
+}
