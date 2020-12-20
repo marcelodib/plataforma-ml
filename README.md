@@ -150,11 +150,11 @@ $ touch .env
 $ nano .env
 ```
 ```sh
-PORT_SERVER=3000 \
-DB_HOST=localhost \
-DB_PORT=3306 \
-DB_USER=SEU_USUARIO \
-DB_PASSWORD=SUA_SENHA \
+PORT_SERVER=3000 
+DB_HOST=localhost 
+DB_PORT=3306 
+DB_USER=SEU_USUARIO 
+DB_PASSWORD=SUA_SENHA 
 DB_NAME=platformML
 ```
 
